@@ -1,15 +1,26 @@
-import Image from 'next/image';
-import styles from './page.module.css';
-import Body from '@/components/body';
-import Footer from '@/components/footer';
-import Head from '@/components/head';
+import React from "react";
 
-export default function Home() {
+import styles from "./page.module.css";
+import Body from "@/components/body";
+import Footer from "@/components/footer";
+import Head from "@/components/head";
+
+const App: React.FC = () => {
   return (
     <div className={styles.app}>
-      {/* <Head />
-      <Body />
-      <Footer /> */}
+      <div className={styles.head}>
+        {" "}
+        <Head />
+      </div>
+      {/* <div className={styles.body}>
+        <Body />
+      </div>
+      <div className={styles.footer}>
+        {" "}
+        <Footer />
+      </div> */}
     </div>
   );
-}
+};
+
+export default App;

@@ -1,50 +1,44 @@
-'use client';
+"use client";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+const albumArt = require("album-art");
+interface Artist {
+  name: string;
+  playcount: number;
+}
 
-export const Gettopalbum = ({userName, apiKey, imgorcover}: any) => {
-  const [data, updateData] = useState<any>({});
+interface Props {
+  userName: string;
+  apiKey: string;
+  imgorcover: string;
+}
+
+const GetTopAlbum = ({ userName, apiKey, imgorcover }: Props) => {
+  const [artist, setArtist] = useState<Artist | null>(null);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${userName}&api_key=${apiKey}&limit=1&format=json`
-        );
-        updateData(response.data);
-      } catch (error) {
-        updateData({error: 'Whoops! Something went wrong with Last.fm'});
-      }
-    };
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${userName}&api_key=${apiKey}&limit=1&format=json`;
 
-    fetchData();
-  }, [apiKey, userName]);
+    axios
+      .get(url)
+      .then((response) => setArtist(response.data.topartists.artist[0]))
+      .catch(() => setError("Whoops! Something went wrong with Last.fm"));
+  }, [imgorcover, apiKey, userName]);
 
-  const buildLastFmData = () => {
-    const topArtist = data?.topartists?.artist?.[0];
+  if (error) return <p>{error}</p>;
+  if (!artist) return <p>Loading...</p>;
 
-    if (!topArtist) {
-      return <p>Loading</p>;
-    }
-
-    if (imgorcover === '1') {
-      const name = topArtist.name;
-      return name;
-    } else if (imgorcover === '2') {
-      const name = topArtist.name;
-      // Consider using a dedicated image fetching library instead of albumArt
-      console.warn('albumArt library might not be suitable for image fetching in React');
-      return <img id='imgid' src='' alt='cover' />;
-    } else if (imgorcover === '3') {
-      const playcount = topArtist.playcount;
-      return playcount;
-    } else {
-      return <p>Loading</p>;
-    }
-  };
-
-  return buildLastFmData();
+  return (
+    <>
+      {imgorcover === "1" && <p>{artist.name}</p>}
+      {imgorcover === "2" && (
+        <img id="imgid" src={albumArt(artist.name)} alt="artist"></img>
+      )}
+      {imgorcover === "3" && <p>{artist.playcount}</p>}
+    </>
+  );
 };
 
-export default Gettopalbum;
+export default GetTopAlbum;

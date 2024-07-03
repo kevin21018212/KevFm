@@ -1,40 +1,49 @@
-import Getcurrenttrack from '@/utils/getCurrentTrack';
-import styles from '../styles/head.module.css';
+// components/Head.tsx
+import React from "react";
+import styles from "../styles/head.module.scss"; // Ensure path matches your project structure
+import GetCurrentTrack from "@/utils/getCurrentTrack"; // Adjust import path as necessary
 
-function Head() {
+const Head: React.FC = () => {
   return (
-    <>
-      <div className={styles.layout}>
-        <div className={styles.HeaderContent}>
-          <div className={styles.HeaderContentTop}>
-            <div className={styles.HeaderContentTopText}>Right Now Kev is Bumpin</div>
-          </div>
-          <div className={styles.HeaderContentBottom}>
-            <div className={styles.HeaderContentBottomText} id='songinfo'>
-              <Getcurrenttrack userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' imgorcover='1' />
-            </div>
-          </div>
-        </div>
+    <div className={styles.layout}>
+      <div className={styles.headerContent}>
+        <h2>Right Now Kev is Bumpin</h2>
 
-        <div className={styles.HeaderImage}>
-          <div className={styles.HeaderImageStack}>
-            <div className={styles.HeaderImageStackCover}>
-              <Getcurrenttrack userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' imgorcover='4' />
-            </div>
-            <div className={styles.HeaderImageStackArtist}>
-              <Getcurrenttrack userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' imgorcover='2' />
-            </div>
-            <div className={styles.HeaderImageStackStreams}>
-              <span>
-                <Getcurrenttrack userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' imgorcover='3' />
-              </span>
-            </div>
-            <div className={styles.HeaderImageStackPlatform}></div>
+        <GetCurrentTrack
+          userName="Kevin21012"
+          apiKey="b6937c7c238176d6899dc83bf146337f"
+          imgorcover="1"
+        />
+      </div>
+
+      <div className={styles.headerImage}>
+        <div className={styles.headerImageStack}>
+          <div className={styles.headerImageStackCover}>
+            <GetCurrentTrack
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+              imgorcover="4"
+            />
           </div>
+          <div className={styles.headerImageStackArtist}>
+            <GetCurrentTrack
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+              imgorcover="2"
+            />
+          </div>
+          <div className={styles.headerImageStackStreams}>
+            <GetCurrentTrack
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+              imgorcover="3"
+            />
+          </div>
+          <div className={styles.headerImageStackPlatform}></div>
         </div>
       </div>
-    </>
+    </div>
   );
-}
+};
 
 export default Head;

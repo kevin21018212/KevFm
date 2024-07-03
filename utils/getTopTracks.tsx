@@ -1,48 +1,64 @@
-'use client';
-import React, {useState, useEffect} from 'react';
-import axios from 'axios';
+"use client";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-export const Gettoptracks = ({imgorcover, userName, apiKey}: any) => {
-  const [data, updateData] = useState<any>({});
+const albumArt = require("album-art");
+
+interface Track {
+  name: string;
+  artist: { name: string };
+}
+
+interface Props {
+  imgorcover: string;
+  userName: string;
+  apiKey: string;
+}
+
+const GetTopTracks = ({ imgorcover, userName, apiKey }: Props) => {
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `http://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`
-        );
-        updateData(response.data);
-      } catch (error) {
-        updateData({error: 'Whoops! Something went wrong with Last.fm'});
-      }
-    };
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`;
 
-    fetchData();
-  }, [apiKey, userName]);
+    axios
+      .get(url)
+      .then((response) => setTracks(response.data.toptracks.track))
+      .catch((error) => setError("Whoops! Something went wrong with Last.fm"));
+  }, [imgorcover, userName, apiKey]);
 
-  const buildLastFmData = () => {
-    const topTracks = data?.toptracks?.track || []; // Use empty array if track is missing
+  if (error) return <p>{error}</p>;
+  if (!tracks.length) return <></>;
 
-    return (
-      <div className='toptracks-container'>
-        {topTracks.map(
-          (track: any, index: number) =>
-            index < 3 && ( // Limit to 3 tracks
-              <div key={index} className='middlestuff'>
-                <div className='middlestuff-p'>{track.name}</div>
-                {imgorcover === '1' && <img id={`imgid${index}`} src='' alt={`${track.name} by ${track.artist.name}`} />}
-                {/* Consider using a dedicated image fetching library for other cases */}
-                {imgorcover === '2' && <img id={`imgid${index}`} src='' alt='' />}
-                {imgorcover === '3' && <p>{track.playcount}</p>}
-              </div>
-            )
-        )}
-        {topTracks.length === 0 && <p>No tracks found</p>}
-      </div>
-    );
-  };
+  return (
+    <div>
+      {tracks.map((track, index) => {
+        if (index + 1 === parseInt(imgorcover)) {
+          albumArt(
+            track.artist.name,
+            { album: track.name },
+            (err: any, res: any) => {
+              const imgElement = document.getElementById(
+                `imgid${index}`
+              ) as HTMLImageElement | null;
+              if (imgElement) {
+                imgElement.src = res || "";
+              }
+            }
+          );
 
-  return buildLastFmData();
+          return (
+            <div key={index} className="middlestuff">
+              <div className="middlestuff-p">{track.name}</div>
+              <img id={`imgid${index}`} src="" alt={track.name}></img>
+            </div>
+          );
+        }
+        return null;
+      })}
+    </div>
+  );
 };
 
-export default Gettoptracks;
+export default GetTopTracks;

@@ -1,54 +1,80 @@
-import React from 'react';
-import styles from '../styles/body.module.css';
-import Gettopalbum from '@/utils/getTopAlbum';
-import Gettoptracks from '@/utils/getTopTracks';
+import React from "react";
+import styles from "../styles/body.module.scss"; // Make sure the path matches your project structure
+import GetTopAlbum from "../utils/getTopAlbum"; // Adjust the import path as necessary
+import GetTopTracks from "../utils/getTopTracks"; // Adjust the import path as necessary
 
-const Body = () => {
+const Body: React.FC = () => {
   return (
-    <div className={styles.Body}>
-      <div className={styles.Sidebar}>
+    <div className={styles.body}>
+      <div className={styles.sidebar}>
         <p>Sidebar</p>
       </div>
 
-      <div className={styles.BodyMain}>
-        <div className={styles.BodyMainTop}>
-          <div className={styles.BodyMainTopContent}>
-            <div className={styles.BodyMainTopText}>
-              Top Artist: <Gettopalbum imgorcover='1' userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' />
+      <div className={styles.bodyMain}>
+        <div className={styles.bodyMainTop}>
+          <div className={styles.bodyMainTopContent}>
+            <div className={styles.bodyMainTopText}>
+              Top Artist:{" "}
+              <GetTopAlbum
+                imgorcover="1"
+                userName="Kevin21012"
+                apiKey="b6937c7c238176d6899dc83bf146337f"
+              />
             </div>
-            <div className={styles.BodyMainTopPlaycount}>
-              <span className={styles.text2}>
-                Playcount: <Gettopalbum imgorcover='3' userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' />
-              </span>
+            <div className={styles.bodyMainTopPlaycount}>
+              Playcount:{" "}
+              <GetTopAlbum
+                imgorcover="3"
+                userName="Kevin21012"
+                apiKey="b6937c7c238176d6899dc83bf146337f"
+              />
             </div>
           </div>
-          <div className={styles.BodyMainTopCover}>
-            <Gettopalbum imgorcover='2' userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' />
+          <div className={styles.bodyMainTopCover}>
+            <GetTopAlbum
+              imgorcover="2"
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+            />
           </div>
         </div>
 
-        <div className={styles.BodyMainMiddle}>
-          <div className={styles.BodyMainMiddleCoverRight}>
-            <Gettoptracks imgorcover='1' userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' />
+        <div className={styles.bodyMainMiddle}>
+          <div className={styles.bodyMainMiddleCoverRight}>
+            <GetTopTracks
+              imgorcover="1"
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+            />
           </div>
-          <div className={styles.BodyMainMiddleCoverMiddle}>
-            <Gettoptracks imgorcover='2' userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' />
+          <div className={styles.bodyMainMiddleCoverMiddle}>
+            <GetTopTracks
+              imgorcover="2"
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+            />
           </div>
-          <div className={styles.BodyMainMiddleCoverLeft}>
-            <Gettoptracks imgorcover='3' userName='Kevin21012' apiKey='b6937c7c238176d6899dc83bf146337f' />
+          <div className={styles.bodyMainMiddleCoverLeft}>
+            <GetTopTracks
+              imgorcover="3"
+              userName="Kevin21012"
+              apiKey="b6937c7c238176d6899dc83bf146337f"
+            />
           </div>
         </div>
 
-        <div className={styles.BodyMainBottom}>
-          <div className={styles.BodyMainBottomCover}>
-            <img src={''} alt='Playlist' />
+        <div className={styles.bodyMainBottom}>
+          <div className={styles.bodyMainBottomCover}>
+            <img src={""} alt="Playlist" />
           </div>
-          <div className={styles.BodyMainBottomContent}>
-            <div className={styles.BodyMainBottomContent}>
-              <a href='https://open.spotify.com/playlist/5pLSoW36SKxvWNivMPpSzz?si=158b467efa0f473f' rel='noopener noreferrer' target='_blank'>
-                Checkout my Playlists
-              </a>
-            </div>
+          <div className={styles.bodyMainBottomContent}>
+            <a
+              href="https://open.spotify.com/playlist/5pLSoW36SKxvWNivMPpSzz?si=158b467efa0f473f"
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              Checkout my Playlists
+            </a>
           </div>
         </div>
       </div>

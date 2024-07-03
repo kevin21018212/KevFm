@@ -1,62 +1,73 @@
-'use client';
-import Head from '@/components/head';
-import React, {useState, useEffect} from 'react';
+"use client";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import styles from "../styles/head.module.scss";
+const albumArt = require("album-art");
 
-const Getcurrenttrack = ({userName, apiKey, imgorcover}: any) => {
-  const [lfmData, updateLfmData] = useState<any>({});
+import { average } from "color.js"; // Assuming color.js has TypeScript support
+
+interface Track {
+  name: string;
+  artist: {
+    "#text": string;
+  };
+  image: { "#text": string }[];
+}
+
+interface Props {
+  userName: string;
+  apiKey: string;
+  imgorcover: string;
+}
+
+const GetCurrentTrack = ({ userName, apiKey, imgorcover }: Props) => {
+  const [track, setTrack] = useState<Track | null>(null);
+  const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${userName}&api_key=${apiKey}&limit=1&nowplaying=true&format=json`
-        );
-        const data = await response.json();
-        updateLfmData(data);
-      } catch (error) {
-        updateLfmData({error: 'Whoops! Something went wrong with Last.fm'});
-      }
-    };
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${userName}&api_key=${apiKey}&limit=1&nowplaying=true&format=json`;
 
-    fetchData();
+    axios
+      .get(url)
+      .then((response) => {
+        const fetchedTrack = response.data.recenttracks.track[0];
+        setTrack(fetchedTrack);
+        console.log(fetchedTrack);
+      })
+      .catch(() => setError("Whoops! Something went wrong with Last.fm"));
   }, [apiKey, userName]);
 
-  const buildLastFmData = () => {
-    const track = lfmData?.recenttracks?.track;
-
-    if (!track) {
-      return <p>Loading</p>;
-    }
-
-    const {
-      name: songName,
-      artist: {'#text': artistName},
-      image: [{'#text': image}] = {},
-    } = track;
-
-    const imageUrl = image ? `https://lastfm.freetls.fastly.net/i/u/300x300/${image.slice(42)}` : '';
-
-    if (imgorcover === '1') {
-      return songName;
-    } else if (imgorcover === '2') {
-      // Consider using a dedicated library for color extraction instead of document manipulation
-      console.warn('Color extraction functionality is not implemented for Next.js environment');
-      return <img id='coverid' src='' alt='cover' />;
-    } else if (imgorcover === '3') {
-      return artistName;
-    } else if (imgorcover === '4') {
-      return <img src={imageUrl} alt='cover' />;
-    } else {
-      return <p>Loading</p>;
-    }
+  const setImageSrc = (elementId: string, src: string | null) => {
+    const element = document.getElementById(
+      elementId
+    ) as HTMLImageElement | null;
+    if (element) element.src = src || "";
   };
 
-  return (
-    <div>
-      <Head />
-      {buildLastFmData()}
-    </div>
-  );
+  if (error) return <p>{error}</p>;
+  if (!track) return <></>;
+
+  const { name, artist, image } = track;
+  const imageSrc = image[3]["#text"];
+
+  if (imgorcover === "1") {
+    return <h1>{name}</h1>;
+  } else if (imgorcover === "2") {
+    albumArt(artist["#text"], async (err: any, res: string) => {
+      setImageSrc("coverid", res || "");
+      const color: string = (await average(res, { format: "hex" })).toString();
+      if (color) {
+        document.documentElement.style.setProperty("--bg", color);
+      }
+    });
+    return <img id="coverid" src="" alt="Cover"></img>;
+  } else if (imgorcover === "3") {
+    return <p>{artist["#text"]}</p>;
+  } else if (imgorcover === "4") {
+    return <img src={imageSrc} alt="Cover"></img>;
+  } else {
+    return <p>Loading...</p>;
+  }
 };
 
-export default Getcurrenttrack;
+export default GetCurrentTrack;

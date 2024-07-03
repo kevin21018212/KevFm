@@ -1,0 +1,187 @@
+// styles/Body.module.scss
+@font-face {
+  font-family: "Spotify";
+  src: local("GothamMedium"), url("../app/GothamMedium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Spotify-Bold";
+  src: local("GothamBold"), url("../app/Gotham-Bold.otf") format("truetype");
+}
+
+$gradient-background: linear-gradient(45deg, #ece9e6 0%, #ffffff 100%);
+$dark-gradient: linear-gradient(45deg, #121212 0%, #181818 100%);
+$shadow-light: rgba(0, 0, 0, 0.07);
+$shadow-intense: rgba(0, 0, 0, 0.45);
+$shadow-inset: 0 20px 10px -20px $shadow-intense inset,
+  -20px 0 10px -20px $shadow-intense inset;
+$shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+
+.body {
+  height: 130vh;
+  background: $gradient-background;
+  display: flex;
+  flex-direction: row;
+
+  .sidebar {
+    background: $dark-gradient;
+    flex-grow: 2;
+    width: 20%;
+    box-shadow: $shadow-light 0px 3px 8px;
+  }
+
+  .bodyMain {
+    width: 80%;
+    flex-direction: row;
+    flex-grow: 8;
+
+    .bodyMainTop {
+      display: flex;
+      height: 40vh;
+
+      .bodyMainTopContent {
+        box-shadow: $shadow-inset;
+        width: 60%;
+        padding-top: 15vh;
+        display: flex;
+        white-space: nowrap;
+
+        .bodyMainTopText,
+        .bodyMainTopPlaycount {
+          padding-left: 3vw;
+          padding-right: 5vw;
+          font-size: clamp(1vw, 2vw + 1vw, 10vw);
+          font-family: "Spotify-Bold";
+          font-weight: 800;
+          background: $dark-gradient;
+          background-clip: text;
+          -webkit-text-fill-color: transparent;
+
+          &.bodyMainTopPlaycount {
+            font-size: 4vw;
+            font-family: "Spotify";
+            font-weight: 600;
+            padding-right: 2vw;
+            background: -webkit-linear-gradient(45deg, #09009f, #32d390 80%);
+            background-clip: text;
+          }
+        }
+      }
+
+      .bodyMainTopCover {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40%;
+        background: $dark-gradient;
+        box-shadow: $shadow-small;
+
+        img {
+          height: 90%;
+          width: 90%;
+          border-radius: 25px;
+        }
+      }
+    }
+
+    .bodyMainMiddle {
+      flex-grow: 1;
+      display: flex;
+      height: 40vh;
+
+      .bodyMainMiddleCoverRight,
+      .bodyMainMiddleCoverMiddle,
+      .bodyMainMiddleCoverLeft {
+        flex-grow: 1;
+        width: 25%;
+        background: $dark-gradient;
+        display: flex;
+      }
+    }
+
+    .bodyMainBottom {
+      display: flex;
+      height: 50vh;
+      width: 100%;
+
+      .bodyMainBottomCover {
+        width: 33.333%;
+        img {
+          display: block;
+          object-fit: cover;
+          width: 100%;
+          height: 100%;
+        }
+      }
+
+      .bodyMainBottomContent {
+        flex-grow: 2;
+        box-shadow: $shadow-inset;
+        display: flex;
+
+        a {
+          display: block;
+          font-size: 3vw;
+          font-weight: 600;
+          width: 40vw;
+          margin: auto;
+          text-decoration: none;
+          padding: 1vw;
+          text-align: center;
+          text-transform: uppercase;
+          background-size: 200% auto;
+          color: white;
+          box-shadow: 0 0 20px #eee;
+          border-radius: 10px;
+          background-image: linear-gradient(
+            to right,
+            #84fab0 0%,
+            #8fd3f4 51%,
+            #84fab0 100%
+          );
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 500px) {
+  .sidebar,
+  .bodyMainTopCover {
+    display: none;
+  }
+
+  .bodyMainTopContent {
+    position: relative;
+    width: 200%;
+    margin: 3vw;
+    box-shadow: none;
+
+    .bodyMainTopText {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 6vw;
+      padding: 0;
+      padding-bottom: 8vh;
+    }
+
+    .bodyMainTopPlaycount {
+      position: absolute;
+      top: 65%;
+      left: 50%;
+      transform: translate(-65%, -50%);
+      font-size: 6vw;
+      padding: 0;
+      padding-left: 15vw;
+    }
+  }
+
+  .bodyMainMiddle,
+  .bodyMainTop,
+  .bodyMainBottom,
+  .body {
+    height: max-content;
+  }
+}
