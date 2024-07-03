@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
-
+import styles from "../styles/body.module.scss";
 const albumArt = require("album-art");
 
 interface Track {
@@ -18,14 +17,29 @@ interface Props {
 const GetTopTracks = ({ imgorcover, userName, apiKey }: Props) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string>("");
+  const [images, setImages] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     const url = `https://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`;
 
-    axios
-      .get(url)
-      .then((response) => setTracks(response.data.toptracks.track))
-      .catch((error) => setError("Whoops! Something went wrong with Last.fm"));
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        setTracks(data.toptracks.track);
+        // Prefetch album art
+        data.toptracks.track.forEach((track: Track, index: number) => {
+          albumArt(
+            track.artist.name,
+            { album: track.name },
+            (err: any, res: string) => {
+              if (!err && res) {
+                setImages((prev) => ({ ...prev, [index]: res }));
+              }
+            }
+          );
+        });
+      })
+      .catch(() => setError("Whoops! Something went wrong with Last.fm"));
   }, [imgorcover, userName, apiKey]);
 
   if (error) return <p>{error}</p>;
@@ -35,23 +49,18 @@ const GetTopTracks = ({ imgorcover, userName, apiKey }: Props) => {
     <div>
       {tracks.map((track, index) => {
         if (index + 1 === parseInt(imgorcover)) {
-          albumArt(
-            track.artist.name,
-            { album: track.name },
-            (err: any, res: any) => {
-              const imgElement = document.getElementById(
-                `imgid${index}`
-              ) as HTMLImageElement | null;
-              if (imgElement) {
-                imgElement.src = res || "";
-              }
-            }
-          );
-
           return (
-            <div key={index} className="middlestuff">
-              <div className="middlestuff-p">{track.name}</div>
-              <img id={`imgid${index}`} src="" alt={track.name}></img>
+            <div key={index} className={styles.middleStuff}>
+              <div className={styles.img}>
+                <img
+                  id={`imgid${index}`}
+                  src={images[index] || ""}
+                  alt={track.name}
+                />
+              </div>
+              <div className={styles.text}>
+                <p>{track.name}</p>
+              </div>
             </div>
           );
         }

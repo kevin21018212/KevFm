@@ -18,7 +18,7 @@ $shadow-inset: 0 20px 10px -20px $shadow-intense inset,
 $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
 .body {
-  height: 130vh;
+  height: 120vh;
   background: $gradient-background;
   display: flex;
   flex-direction: row;
@@ -26,14 +26,14 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
   .sidebar {
     background: $dark-gradient;
     flex-grow: 2;
-    width: 20%;
+    width: 25vw;
     box-shadow: $shadow-light 0px 3px 8px;
   }
 
   .bodyMain {
-    width: 80%;
+    width: 75vw;
+    height: 120vh;
     flex-direction: row;
-    flex-grow: 8;
 
     .bodyMainTop {
       display: flex;
@@ -41,27 +41,26 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
       .bodyMainTopContent {
         box-shadow: $shadow-inset;
-        width: 60%;
-        padding-top: 15vh;
+        width: 65%;
         display: flex;
+        justify-content: center;
+        align-items: center;
         white-space: nowrap;
 
         .bodyMainTopText,
         .bodyMainTopPlaycount {
-          padding-left: 3vw;
-          padding-right: 5vw;
+          padding: 0 3vw;
           font-size: clamp(1vw, 2vw + 1vw, 10vw);
           font-family: "Spotify-Bold";
           font-weight: 800;
           background: $dark-gradient;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-
+          text-align: center;
           &.bodyMainTopPlaycount {
-            font-size: 4vw;
+            font-size: 3vw;
             font-family: "Spotify";
             font-weight: 600;
-            padding-right: 2vw;
             background: -webkit-linear-gradient(45deg, #09009f, #32d390 80%);
             background-clip: text;
           }
@@ -74,7 +73,8 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
         align-items: center;
         width: 40%;
         background: $dark-gradient;
-        box-shadow: $shadow-small;
+        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+          rgba(0, 0, 0, 0.23) 0px 3px 6px;
 
         img {
           height: 90%;
@@ -85,47 +85,103 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     }
 
     .bodyMainMiddle {
-      flex-grow: 1;
       display: flex;
       height: 40vh;
+      overflow-y: hidden;
 
       .bodyMainMiddleCoverRight,
       .bodyMainMiddleCoverMiddle,
       .bodyMainMiddleCoverLeft {
-        flex-grow: 1;
-        width: 25%;
+        width: 25vw;
         background: $dark-gradient;
         display: flex;
       }
     }
 
-    .bodyMainBottom {
+    .middleStuff {
       display: flex;
-      height: 50vh;
-      width: 100%;
+      flex-direction: column;
+      height: 100%;
+      width: 25vw;
+      background-color: #181818;
 
-      .bodyMainBottomCover {
-        width: 33.333%;
+      .text {
+        height: 14%;
+        width: 100%;
+
+        display: flex;
+        align-items: flex-start;
+        p {
+          padding: 0% 5%;
+          font-family: "Spotify-Bold";
+          font-size: 2vw;
+          font-weight: 800;
+          text-overflow: ellipsis;
+          text-wrap: nowrap;
+
+          background: linear-gradient(45deg, #ece9e6 0%, #ffffff 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+      }
+      .img {
+        height: 85%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
         img {
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
           display: block;
           object-fit: cover;
-          width: 100%;
-          height: 100%;
+          width: 90%;
+          height: 90%;
+          border-radius: 30px;
+        }
+      }
+    }
+
+    .bodyMainBottom {
+      height: 40vh;
+      width: 75vw;
+      display: flex;
+
+      .bodyMainBottomCover {
+        width: 25vw;
+        height: 40vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        img {
+          box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px,
+            rgba(0, 0, 0, 0.23) 0px 3px 6px;
+          display: block;
+          object-fit: cover;
+          width: 80%;
+          height: 80%;
+          border-radius: 30px;
         }
       }
 
       .bodyMainBottomContent {
-        flex-grow: 2;
         box-shadow: $shadow-inset;
         display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 40vh;
+        width: 50vw;
+        padding-top: 5vh;
 
         a {
-          display: block;
           font-size: 3vw;
           font-weight: 600;
           width: 40vw;
           margin: auto;
           text-decoration: none;
+
           padding: 1vw;
           text-align: center;
           text-transform: uppercase;

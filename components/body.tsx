@@ -65,7 +65,7 @@ const Body: React.FC = () => {
 
         <div className={styles.bodyMainBottom}>
           <div className={styles.bodyMainBottomCover}>
-            <img src={""} alt="Playlist" />
+            <img src={"playlist.png"} alt="Playlist" />
           </div>
           <div className={styles.bodyMainBottomContent}>
             <a

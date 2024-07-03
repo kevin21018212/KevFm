@@ -12,10 +12,10 @@ const App: React.FC = () => {
         {" "}
         <Head />
       </div>
-      {/* <div className={styles.body}>
+      <div className={styles.body}>
         <Body />
       </div>
-      <div className={styles.footer}>
+      {/*  <div className={styles.footer}>
         {" "}
         <Footer />
       </div> */}
