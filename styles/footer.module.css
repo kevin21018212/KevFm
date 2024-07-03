@@ -1,0 +1,10 @@
+.Footer {
+  display: flex;
+  height: 10vh;
+  width: 100%;
+}
+
+.Footer-Content {
+  flex-grow: 3;
+  background-color: pink;
+}
