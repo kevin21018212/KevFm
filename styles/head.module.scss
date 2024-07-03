@@ -17,22 +17,23 @@ $shadow-base: 0 1px 2px $shadow-intense, 0 2px 4px $shadow-intense,
   box-shadow: -20px 0 10px -20px rgba(0, 0, 0, 0.45) inset;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-
+  padding: 2.5vw;
   width: 60%;
   height: 100%;
 
   .h2 {
     font-family: "Spotify-Bold";
 
-    font-size: 3vw;
+    font-size: 4vw;
     font-weight: 800;
     background: $text-gradient;
   }
   h1 {
     width: fit-content;
     font-size: 6vw;
+    text-wrap: wrap;
     padding-left: 2vw;
     background: -webkit-linear-gradient(45deg, #09009f, #32d390 80%);
     -webkit-background-clip: text;
@@ -91,7 +92,7 @@ $shadow-base: 0 1px 2px $shadow-intense, 0 2px 4px $shadow-intense,
 
       p {
         background: var(--bg2);
-        font-size: 3vw;
+        font-size: 2.5vw;
         text-wrap: wrap;
         background: $background-gradient;
         -webkit-background-clip: text;

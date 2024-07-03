@@ -27,12 +27,11 @@ const GetCurrentTrack = ({ userName, apiKey, imgorcover }: Props) => {
   useEffect(() => {
     const url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${userName}&api_key=${apiKey}&limit=1&nowplaying=true&format=json`;
 
-    axios
-      .get(url)
-      .then((response) => {
-        const fetchedTrack = response.data.recenttracks.track[0];
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => {
+        const fetchedTrack = data.recenttracks.track[0];
         setTrack(fetchedTrack);
-        console.log(fetchedTrack);
       })
       .catch(() => setError("Whoops! Something went wrong with Last.fm"));
   }, [apiKey, userName]);
