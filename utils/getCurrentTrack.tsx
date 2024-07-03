@@ -55,9 +55,18 @@ const GetCurrentTrack = ({ userName, apiKey, imgorcover }: Props) => {
   } else if (imgorcover === "2") {
     albumArt(artist["#text"], async (err: any, res: string) => {
       setImageSrc("coverid", res || "");
+
       const color: string = (await average(res, { format: "hex" })).toString();
+      const color2: string = (
+        await average(imageSrc, { format: "hex" })
+      ).toString();
+
+      console.log(color, color2);
       if (color) {
         document.documentElement.style.setProperty("--bg", color);
+      }
+      if (color2) {
+        document.documentElement.style.setProperty("--bg2", color2);
       }
     });
     return <img id="coverid" src="" alt="Cover"></img>;
