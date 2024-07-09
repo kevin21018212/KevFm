@@ -3,7 +3,7 @@ import styles from '../styles/body.module.scss'; // Make sure the path matches y
 import GetTopAlbum from '../utils/getTopAlbum'; // Adjust the import path as necessary
 import GetTopTracks from '../utils/getTopTracks'; // Adjust the import path as necessary
 
-const Body: React.FC = () => {
+const Body= () => {
   return (
     <div className={styles.body}>
       <div className={styles.sidebar}>

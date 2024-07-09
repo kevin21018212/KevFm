@@ -1,6 +1,7 @@
 'use client';
 import {useState, useEffect} from 'react';
 import axios from 'axios';
+import {getServerSideProps} from './getSSR';
 
 const albumArt = require('album-art');
 
@@ -18,12 +19,10 @@ const GetTopAlbum = ({imgorcover}: Props) => {
   const [imageURL, setImageURL] = useState<string>('');
   const [error, setError] = useState<string>('');
 
-  let userName = process.env.REACT_APP_LASTFM_API_KEY;
-  let apiKey = process.env.REACT_APP_LASTFM_API_KEY;
-
   useEffect(() => {
     const fetchArtist = async () => {
       try {
+        const {userName, apiKey}: any = (await getServerSideProps()).props;
         const url = `https://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=${userName}&api_key=${apiKey}&limit=1&format=json`;
         const response = await axios.get(url);
         const fetchedArtist = response.data.topartists.artist[0];
@@ -39,7 +38,7 @@ const GetTopAlbum = ({imgorcover}: Props) => {
     };
 
     fetchArtist();
-  }, [imgorcover, apiKey, userName]);
+  }, [imgorcover]);
 
   if (error) return <p>{error}</p>;
   if (!artist) return <></>;

@@ -1,10 +1,8 @@
 'use client';
 import {useState, useEffect} from 'react';
-import axios from 'axios';
-import styles from '../styles/head.module.scss';
+import {average} from 'color.js';
+import {getServerSideProps} from './getSSR';
 const albumArt = require('album-art');
-
-import {average} from 'color.js'; // Assuming color.js has TypeScript support
 
 interface Track {
   name: string;
@@ -22,20 +20,23 @@ const GetCurrentTrack = ({imgorcover}: Props) => {
   const [track, setTrack] = useState<Track | null>(null);
   const [error, setError] = useState<string>('');
 
-  let userName = process.env.REACT_APP_LASTFM_USERNAME;
-  let apiKey = process.env.REACT_APP_LASTFM_API_KEY;
-
   useEffect(() => {
-    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${userName}&api_key=${apiKey}&limit=1&nowplaying=true&format=json`;
+    const fetchData = async () => {
+      try {
+        const {userName, apiKey}: any = (await getServerSideProps()).props;
 
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
+        const url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${userName}&api_key=${apiKey}&limit=1&nowplaying=true&format=json`;
+        const response = await fetch(url);
+        const data = await response.json();
         const fetchedTrack = data.recenttracks.track[0];
         setTrack(fetchedTrack);
-      })
-      .catch(() => setError('Whoops! Something went wrong with Last.fm'));
-  }, [apiKey, userName]);
+      } catch (error) {
+        setError('Whoops! Something went wrong with Last.fm');
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const setImageSrc = (elementId: string, src: string | null) => {
     const element = document.getElementById(elementId) as HTMLImageElement | null;
@@ -48,14 +49,13 @@ const GetCurrentTrack = ({imgorcover}: Props) => {
   const {name, artist, image} = track;
   const imageSrc = image[3]['#text'];
 
-  if (imgorcover === '1') {
-    return <h1>{name}</h1>;
-  } else if (imgorcover === '2') {
-    albumArt(artist['#text'], async (err: any, res: string) => {
+  const handleImageArt = async () => {
+    try {
+      const res = await albumArt(artist['#text']);
       setImageSrc('coverid', res || '');
 
-      const color: string = (await average(res, {format: 'hex'})).toString();
-      const color2: string = (await average(imageSrc, {format: 'hex'})).toString();
+      const color = (await average(res, {format: 'hex'})).toString();
+      const color2 = (await average(imageSrc, {format: 'hex'})).toString();
 
       console.log(color, color2);
       if (color) {
@@ -64,7 +64,15 @@ const GetCurrentTrack = ({imgorcover}: Props) => {
       if (color2) {
         document.documentElement.style.setProperty('--bg2', color2);
       }
-    });
+    } catch (err) {
+      console.error('Error fetching album art:', err);
+    }
+  };
+
+  if (imgorcover === '1') {
+    return <h1>{name}</h1>;
+  } else if (imgorcover === '2') {
+    handleImageArt();
     return <img id='coverid' src='' alt='Cover'></img>;
   } else if (imgorcover === '3') {
     return <p>{artist['#text']}</p>;

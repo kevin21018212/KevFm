@@ -1,6 +1,7 @@
 'use client';
 import {useEffect, useState} from 'react';
 import styles from '../styles/body.module.scss';
+import {getServerSideProps} from './getSSR';
 const albumArt = require('album-art');
 
 interface Track {
@@ -16,17 +17,22 @@ const GetTopTracks = ({imgorcover}: Props) => {
   const [tracks, setTracks] = useState<Track[]>([]);
   const [error, setError] = useState<string>('');
   const [images, setImages] = useState<{[key: string]: string}>({});
-  let userName = process.env.REACT_APP_LASTFM_USERNAME;
-  let apiKey = process.env.REACT_APP_LASTFM_API_KEY;
+  let userName = process.env.LASTFM_USERNAME;
+  let apiKey = process.env.LASTFM_API_KEY;
 
   useEffect(() => {
-    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`;
-    console.log(url);
-    fetch(url)
-      .then((response) => response.json())
-      .then((data) => {
+    const fetchData = async () => {
+      try {
+        const {userName, apiKey} = (await getServerSideProps()).props;
+
+        let url = `https://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`;
+        console.log(url);
+
+        let response = await fetch(url);
+        let data = await response.json();
+
         setTracks(data.toptracks.track);
-        // Prefetch album art
+
         data.toptracks.track.forEach((track: Track, index: number) => {
           albumArt(track.artist.name, {album: track.name}, (err: any, res: string) => {
             if (!err && res) {
@@ -34,9 +40,13 @@ const GetTopTracks = ({imgorcover}: Props) => {
             }
           });
         });
-      })
-      .catch(() => setError('Whoops! Something went wrong with Last.fm'));
-  }, [imgorcover, userName, apiKey]);
+      } catch (error) {
+        setError('Whoops! Something went wrong with Last.fm');
+      }
+    };
+
+    fetchData();
+  }, [imgorcover]);
 
   if (error) return <p>{error}</p>;
   if (!tracks.length) return <></>;
