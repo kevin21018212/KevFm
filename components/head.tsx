@@ -11,14 +11,6 @@ import {
   bounceVariants,
 } from "@/utils/animations";
 
-interface TrackData {
-  name: string;
-  artist: string;
-  imageSrc: string;
-  albumArtSrc: string;
-  bgColor: string;
-  bgColor2: string;
-}
 
 const Head: React.FC = () => {
   const [trackData, setTrackData] = useState<TrackData | null>(null);

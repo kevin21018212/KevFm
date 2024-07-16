@@ -29,6 +29,8 @@ export const getCurrentTrack = async (): Promise<TrackData | null> => {
     const data = await response.json();
     const track: Track = data.recenttracks.track[0];
 
+
+    
     const imageSrc = track.image[3]["#text"];
     const albumArtSrc = await albumArt(track.artist["#text"]);
     const bgColor = (await average(albumArtSrc, { format: "hex" })).toString();
