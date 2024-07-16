@@ -4,15 +4,15 @@
   background: $boxBackground;
   width: 25vw;
   height: 130vh;
-  padding: 2rem;
+  padding: 2vw;
   @extend .flex-center-column;
-  gap: 1.5rem;
+  gap: 1.5vw;
   box-shadow: $buttonShadow;
 
   .infoSection,
   .recentSection {
     background: $containerBackground;
-    padding: 1rem 1.5rem;
+    padding: 1vh 1.5vw;
 
     border-radius: 8px;
     box-shadow: $boxShadow;
@@ -34,13 +34,13 @@
 
     p {
       margin: 1vh 0;
-      font-size: 1vw;
+      font-size: 1.15vw;
       color: $textSecondary;
 
       a {
         color: $primaryColor;
         text-decoration: none;
-
+        font-size: 1.25vw;
         &:hover {
           color: $primary-hover-color;
         }
@@ -59,7 +59,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 1.5vh;
+    margin-bottom: 2vh;
     padding: 1vh 0.75vw;
     border-radius: 8px;
     background: $secondaryColor;
@@ -103,8 +103,8 @@
       .githubBubble {
         display: flex;
         align-items: center;
-        gap: 0.5rem;
-        padding: 0.5rem 1rem;
+        gap: 0.5vw;
+        padding: 0.5vh 1vw;
         background: $containerBackground;
         border-radius: 30px;
         box-shadow: $boxShadow;
