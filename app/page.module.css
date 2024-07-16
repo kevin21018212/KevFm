@@ -1,10 +1,10 @@
 @font-face {
-  font-family: "Spotify";
-  src: local("GothamMeduim"), url(./GothamMedium.ttf) format("opentype");
+  font-family: 'Spotify';
+  src: local('GothamMeduim'), url(./GothamMedium.ttf) format('opentype');
 }
 @font-face {
-  font-family: "Spotify-Bold";
-  src: local("GothamBold"), url(./Gotham-Bold.otf) format("truetype");
+  font-family: 'Spotify-Bold';
+  src: local('GothamBold'), url(./Gotham-Bold.otf) format('truetype');
 }
 
 .app {
@@ -18,8 +18,4 @@
 }
 .head {
   height: 55vh;
-}
-
-.body {
-  height: 130vh;
 }

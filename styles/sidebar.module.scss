@@ -1,10 +1,10 @@
-@import "/app/common.module.scss";
+@import '/app/common.module.scss';
 
 .sidebar {
   background: $boxBackground;
   width: 25vw;
-  height: 130vh;
-  padding: 2vw;
+  height: 100%;
+  padding: 2vh 2.5vw;
   @extend .flex-center-column;
   gap: 1.5vw;
   box-shadow: $buttonShadow;
@@ -49,10 +49,10 @@
   }
 
   .infoSection {
-    height: 30vh;
+    height: 32.5vh;
   }
   .recentSection {
-    height: 100vh;
+    height: 95vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
