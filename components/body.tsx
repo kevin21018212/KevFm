@@ -1,8 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import styles from "../styles/body.module.scss"; // Make sure the path matches your project structure
-import { getTopAlbum } from "../utils/getTopAlbum"; // Adjust the import path as necessary
-import { getTopTracks } from "../utils/getTopTracks"; // Adjust the import path as necessary
+import { motion } from "framer-motion";
+import styles from "../styles/body.module.scss";
+// Adjust the import path as necessary
+import {
+  bounceVariants,
+  containerVariants,
+  linkVariants,
+} from "@/utils/animations";
+import { getTopAlbum } from "@/utils/getTopAlbum";
+import { getTopTracks } from "@/utils/getTopTracks";
+import { ImageCard } from "@/utils/imageCard";
 
 interface Artist {
   name: string;
@@ -22,90 +30,95 @@ const Body: React.FC = () => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    const fetchTopAlbum = async () => {
-      const album = await getTopAlbum();
-      if (album) {
-        setTopAlbum(album);
-      } else {
+    const fetchData = async () => {
+      try {
+        const [album, tracks] = await Promise.all([
+          getTopAlbum(),
+          getTopTracks(),
+        ]);
+        if (album) setTopAlbum(album);
+        if (tracks) setTopTracks(tracks);
+        if (!album || !tracks) throw new Error();
+      } catch {
         setError("Whoops! Something went wrong with Last.fm");
       }
     };
 
-    const fetchTopTracks = async () => {
-      const tracks = await getTopTracks();
-      if (tracks) {
-        setTopTracks(tracks);
-      } else {
-        setError("Whoops! Something went wrong with Last.fm");
-      }
-    };
-
-    fetchTopAlbum();
-    fetchTopTracks();
+    fetchData();
   }, []);
 
   if (error) return <p>{error}</p>;
   if (!topAlbum || !topTracks) return <></>;
 
   return (
-    <div className={styles.body}>
+    <motion.div
+      className={styles.body}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
       <div className={styles.sidebar}>
         <p>Sidebar</p>
       </div>
 
-      <div className={styles.bodyMain}>
-        <div className={styles.bodyMainTop}>
-          <div className={styles.bodyMainTopContent}>
-            <div className={styles.bodyMainTopText}>
+      <motion.div className={styles.bodyMain}>
+        <motion.div className={styles.bodyMainTop} variants={containerVariants}>
+          <motion.div className={styles.bodyMainTopContent}>
+            <motion.div
+              className={styles.bodyMainTopText}
+              variants={bounceVariants(0.2)}
+            >
               Top Artist: <p>{topAlbum.name}</p>
-            </div>
-            <div className={styles.bodyMainTopPlaycount}>
+            </motion.div>
+            <motion.div
+              className={styles.bodyMainTopPlaycount}
+              variants={bounceVariants(0.3)}
+            >
               Playcount: <p>{topAlbum.playcount}</p>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
           <div className={styles.bodyMainTopCover}>
             <img src={topAlbum.imageURL} alt={topAlbum.name} />
           </div>
-        </div>
+        </motion.div>
 
-        <div className={styles.bodyMainMiddle}>
-          <div className={styles.bodyMainMiddleCoverRight}>
-            <div className={styles.middleStuff}>
-              <div className={styles.img}>
-                <img src={topTracks[0].imageURL} alt={topTracks[0].name} />
-              </div>
-              <div className={styles.text}>
-                <p>{topTracks[0].name}</p>
-              </div>
-            </div>
-          </div>
-          <div className={styles.bodyMainMiddleCoverMiddle}>
-            <div className={styles.middleStuff}>
-              <div className={styles.img}>
-                <img src={topTracks[1].imageURL} alt={topTracks[1].name} />
-              </div>
-              <div className={styles.text}>
-                <p>{topTracks[1].name}</p>
-              </div>
-            </div>
-          </div>
-          <div className={styles.bodyMainMiddleCoverLeft}>
-            <div className={styles.middleStuff}>
-              <div className={styles.img}>
-                <img src={topTracks[2].imageURL} alt={topTracks[2].name} />
-              </div>
-              <div className={styles.text}>
-                <p>{topTracks[2].name}</p>
-              </div>
-            </div>
-          </div>
-        </div>
+        <motion.div className={styles.bodyMainMiddle}>
+          {topTracks.slice(0, 3).map((track, index) => (
+            <motion.div
+              key={index}
+              className={
+                styles[
+                  `bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`
+                ]
+              }
+            >
+              <ImageCard
+                src={track.imageURL}
+                alt={track.name}
+                delay={0.4 + index * 0.2}
+              />
+            </motion.div>
+          ))}
+        </motion.div>
 
-        <div className={styles.bodyMainBottom}>
+        <motion.div
+          className={styles.bodyMainBottom}
+          variants={containerVariants}
+        >
           <div className={styles.bodyMainBottomCover}>
-            <img src={"playlist.png"} alt="Playlist" />
+            <motion.img
+              variants={bounceVariants(0.9)}
+              src={"playlist.png"}
+              alt="Playlist"
+              initial="hidden"
+              animate="visible"
+            />
           </div>
-          <div className={styles.bodyMainBottomContent}>
+          <motion.div
+            className={styles.bodyMainBottomContent}
+            whileHover="hover"
+            variants={linkVariants}
+          >
             <a
               href="https://open.spotify.com/playlist/5pLSoW36SKxvWNivMPpSzz?si=158b467efa0f473f"
               rel="noopener noreferrer"
@@ -113,10 +126,10 @@ const Body: React.FC = () => {
             >
               Checkout my Playlists
             </a>
-          </div>
-        </div>
-      </div>
-    </div>
+          </motion.div>
+        </motion.div>
+      </motion.div>
+    </motion.div>
   );
 };
 

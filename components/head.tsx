@@ -1,8 +1,15 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import styles from "../styles/head.module.scss"; // Ensure path matches your project structure
 import { getCurrentTrack } from "@/utils/getCurrentTrack"; // Adjust import path as necessary
+import {
+  containerVariants,
+  textVariants,
+  h1Variants,
+  bounceVariants,
+} from "@/utils/animations";
 
 interface TrackData {
   name: string;
@@ -38,28 +45,54 @@ const Head: React.FC = () => {
   const { name, artist, imageSrc, albumArtSrc } = trackData;
 
   return (
-    <div className={styles.layout}>
-      <div className={styles.headerContent}>
-        <h2>Right Now Kev is Bumpin</h2>
+    <motion.div
+      className={styles.layout}
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.div className={styles.headerContent}>
+        <motion.h2 variants={textVariants}>Right Now Kev is Bumpin</motion.h2>
+        <motion.h1 variants={h1Variants}>{name}</motion.h1>
+      </motion.div>
 
-        <h1>{name}</h1>
-      </div>
-
-      <div className={styles.headerImage}>
+      <motion.div className={styles.headerImage}>
         <div className={styles.headerImageStack}>
-          <div className={styles.headerImageStackCover}>
-            <img src={imageSrc} alt="Cover"></img>
-          </div>
-          <div className={styles.headerImageStackArtist}>
-            <img id="coverid" src={albumArtSrc} alt="Cover"></img>
-          </div>
-          <div className={styles.headerImageStackStreams}>
+          <motion.div
+            className={styles.headerImageStackCover}
+            whileHover="hover"
+            variants={bounceVariants(0.4)}
+            initial="hidden"
+            animate="visible"
+          >
+            <img src={imageSrc} alt="Cover" />
+          </motion.div>
+          <motion.div
+            className={styles.headerImageStackArtist}
+            whileHover="hover"
+            variants={bounceVariants(0.5)}
+            initial="hidden"
+            animate="visible"
+          >
+            <img id="coverid" src={albumArtSrc} alt="Cover" />
+          </motion.div>
+          <motion.div
+            className={styles.headerImageStackStreams}
+            variants={bounceVariants(0.8)}
+            initial="hidden"
+            animate="visible"
+          >
             <p>{artist}</p>
-          </div>
-          <div className={styles.headerImageStackPlatform}></div>
+          </motion.div>
+          <motion.div
+            className={styles.headerImageStackPlatform}
+            variants={bounceVariants(0.6)}
+            initial="hidden"
+            animate="visible"
+          />
         </div>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
   );
 };
 
