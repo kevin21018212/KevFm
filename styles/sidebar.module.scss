@@ -4,17 +4,18 @@
 
 .sidebar {
   background: $boxBackground;
-  flex-grow: 2;
   width: 25vw;
+  height: 130vh;
   padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  @extend .flex-center-column;
   gap: 1.5rem;
+  box-shadow: $buttonShadow;
 
-  .sidebarSection {
+  .infoSection,
+  .recentSection {
     background: $containerBackground;
-    padding: 1.5rem;
+    padding: 1rem 1.5rem;
+
     border-radius: 8px;
     box-shadow: $boxShadow;
     width: 100%;
@@ -22,16 +23,16 @@
 
     h2 {
       font-size: 1.8rem;
-      margin-bottom: 1rem;
+      margin-bottom: 0.5rem;
       color: $textPrimary;
     }
 
     img {
-      width: 80px;
-      height: 80px;
+      width: 5vw;
+      height: 7.5vh;
       border-radius: 50%;
-      margin-bottom: 1rem;
       box-shadow: $boxShadow;
+      background-color: $secondaryColor;
     }
 
     p {
@@ -48,6 +49,13 @@
         }
       }
     }
+  }
+
+  .infoSection {
+    height: 30vh;
+  }
+  .recentSection {
+    height: 100vh;
   }
 
   .track {

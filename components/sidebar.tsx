@@ -46,16 +46,9 @@ const Sidebar: React.FC = () => {
       initial="hidden"
       animate="visible"
     >
-      <motion.div
-        className={styles.sidebarSection}
-        variants={bounceVariants(0.1)}
-      >
+      <motion.div className={styles.infoSection} variants={bounceVariants(0.1)}>
         <h2>User Info</h2>
-        <motion.img
-          src={userInfo.image}
-          alt={userInfo.name}
-          variants={imageVariants}
-        />
+        <motion.img src={userInfo.image} variants={imageVariants} />
         <p>
           <a href={userInfo.url} target="_blank" rel="noopener noreferrer">
             {userInfo.name} ({userInfo.realname})
@@ -66,7 +59,7 @@ const Sidebar: React.FC = () => {
         <p>Playcount: {userInfo.playcount}</p>
       </motion.div>
       <motion.div
-        className={styles.sidebarSection}
+        className={styles.recentSection}
         variants={bounceVariants(0.1)}
       >
         <h2>Recent Tracks</h2>
