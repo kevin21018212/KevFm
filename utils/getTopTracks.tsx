@@ -1,4 +1,3 @@
-// utils/getTopTracks.ts
 import { getServerSideProps } from "./getSSR";
 const albumArt = require("album-art");
 
@@ -15,12 +14,19 @@ export const getTopTracks = async (): Promise<Track[] | null> => {
     const response = await fetch(url);
     const data = await response.json();
 
+    // Log the API response
+    console.log("API Response for getTopTracks:", data);
+
     const tracks = await Promise.all(
       data.toptracks.track.map(async (track: any) => {
         const imageURL = await albumArt(track.artist.name, {
           album: track.name,
         });
-        return { ...track, imageURL };
+        return {
+          ...track,
+          imageURL,
+          url: track.url, // New field
+        };
       })
     );
 

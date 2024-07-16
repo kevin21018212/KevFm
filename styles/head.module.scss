@@ -78,6 +78,7 @@
       p {
         background: var(--bg2);
         @extend .subHeading;
+        text-wrap: wrap;
       }
     }
   }

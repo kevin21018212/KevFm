@@ -1,0 +1,115 @@
+// styles/sidebar.module.scss
+
+@import "/app/common.module.scss";
+
+.sidebar {
+  background: $boxBackground;
+  flex-grow: 2;
+  width: 25vw;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+
+  .sidebarSection {
+    background: $containerBackground;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: $boxShadow;
+    width: 100%;
+    text-align: center;
+
+    h2 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: $textPrimary;
+    }
+
+    img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      margin-bottom: 1rem;
+      box-shadow: $boxShadow;
+    }
+
+    p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      color: $textSecondary;
+
+      a {
+        color: $primaryColor;
+        text-decoration: none;
+
+        &:hover {
+          color: $primary-hover-color;
+        }
+      }
+    }
+  }
+
+  .track {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 8px;
+    background: $secondaryColor;
+    box-shadow: $boxShadow;
+    width: 100%;
+
+    p {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      color: $textSecondary;
+    }
+
+    span {
+      color: $textSecondary;
+    }
+
+    .trackName {
+      color: $primaryColor;
+      text-decoration: none;
+
+      &:hover {
+        color: $primary-hover-color;
+      }
+    }
+  }
+
+  .githubLink {
+    margin-top: auto;
+    a {
+      color: $textPrimary;
+      text-decoration: none;
+
+      &:hover {
+        color: $primaryColor;
+      }
+
+      .githubBubble {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background: $containerBackground;
+        border-radius: 30px;
+        box-shadow: $boxShadow;
+        transition: transform 0.3s ease-in-out;
+
+        &:hover {
+          transform: scale(1.05);
+        }
+
+        span {
+          font-size: 1.2rem;
+          color: $textPrimary;
+        }
+      }
+    }
+  }
+}

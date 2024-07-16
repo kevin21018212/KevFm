@@ -11,6 +11,7 @@ import {
 import { getTopAlbum } from "@/utils/getTopAlbum";
 import { getTopTracks } from "@/utils/getTopTracks";
 import { ImageCard } from "@/utils/imageCard";
+import Sidebar from "./sidebar";
 
 interface Artist {
   name: string;
@@ -58,7 +59,7 @@ const Body: React.FC = () => {
       animate="visible"
     >
       <div className={styles.sidebar}>
-        <p>Sidebar</p>
+        <Sidebar />
       </div>
 
       <motion.div className={styles.bodyMain}>

@@ -1,5 +1,3 @@
-// animations.ts
-
 import { Variants } from "framer-motion";
 
 // Container variant with staggered children animations
@@ -68,4 +66,16 @@ export const fadeInOutVariants: Variants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.5 } },
   exit: { opacity: 0, transition: { duration: 0.5 } },
+};
+
+// Image animations
+export const imageVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.8 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
+};
+
+// Track animations
+export const trackVariants: Variants = {
+  hidden: { opacity: 0, y: 50 },
+  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50 } },
 };
