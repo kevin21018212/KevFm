@@ -1,75 +1,32 @@
-'use client';
-import {useEffect, useState} from 'react';
-import styles from '../styles/body.module.scss';
-import {getServerSideProps} from './getSSR';
-const albumArt = require('album-art');
+// utils/getTopTracks.ts
+import { getServerSideProps } from "./getSSR";
+const albumArt = require("album-art");
 
 interface Track {
   name: string;
-  artist: {name: string};
+  artist: { name: string };
+  imageURL: string;
 }
 
-interface Props {
-  imgorcover: string;
-}
+export const getTopTracks = async (): Promise<Track[] | null> => {
+  try {
+    const { userName, apiKey } = (await getServerSideProps()).props;
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`;
+    const response = await fetch(url);
+    const data = await response.json();
 
-const GetTopTracks = ({imgorcover}: Props) => {
-  const [tracks, setTracks] = useState<Track[]>([]);
-  const [error, setError] = useState<string>('');
-  const [images, setImages] = useState<{[key: string]: string}>({});
-  let userName = process.env.LASTFM_USERNAME;
-  let apiKey = process.env.LASTFM_API_KEY;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const {userName, apiKey} = (await getServerSideProps()).props;
-
-        let url = `https://ws.audioscrobbler.com/2.0/?method=user.getTopTracks&user=${userName}&api_key=${apiKey}&limit=3&period=1day&format=json`;
-        console.log(url);
-
-        let response = await fetch(url);
-        let data = await response.json();
-
-        setTracks(data.toptracks.track);
-
-        data.toptracks.track.forEach((track: Track, index: number) => {
-          albumArt(track.artist.name, {album: track.name}, (err: any, res: string) => {
-            if (!err && res) {
-              setImages((prev) => ({...prev, [index]: res}));
-            }
-          });
+    const tracks = await Promise.all(
+      data.toptracks.track.map(async (track: any) => {
+        const imageURL = await albumArt(track.artist.name, {
+          album: track.name,
         });
-      } catch (error) {
-        setError('Whoops! Something went wrong with Last.fm');
-      }
-    };
+        return { ...track, imageURL };
+      })
+    );
 
-    fetchData();
-  }, [imgorcover]);
-
-  if (error) return <p>{error}</p>;
-  if (!tracks.length) return <></>;
-
-  return (
-    <div>
-      {tracks.map((track, index) => {
-        if (index + 1 === parseInt(imgorcover)) {
-          return (
-            <div key={index} className={styles.middleStuff}>
-              <div className={styles.img}>
-                <img id={`imgid${index}`} src={images[index] || ''} alt={track.name} />
-              </div>
-              <div className={styles.text}>
-                <p>{track.name}</p>
-              </div>
-            </div>
-          );
-        }
-        return null;
-      })}
-    </div>
-  );
+    return tracks;
+  } catch (error) {
+    console.error("Error fetching top tracks:", error);
+    return null;
+  }
 };
-
-export default GetTopTracks;

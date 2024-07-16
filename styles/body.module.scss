@@ -1,35 +1,20 @@
+@import "/app/common.module.scss";
 // styles/Body.module.scss
-@font-face {
-  font-family: 'Spotify';
-  src: local('GothamMedium'), url('../app/GothamMedium.ttf') format('truetype');
-}
-
-@font-face {
-  font-family: 'Spotify-Bold';
-  src: local('GothamBold'), url('../app/Gotham-Bold.otf') format('truetype');
-}
-
-$gradient-background: linear-gradient(45deg, #ece9e6 0%, #ffffff 100%);
-$dark-gradient: linear-gradient(45deg, #121212 0%, #181818 100%);
-$shadow-light: rgba(0, 0, 0, 0.07);
-$shadow-intense: rgba(0, 0, 0, 0.45);
-$shadow-inset: 0 20px 10px -20px $shadow-intense inset, -20px 0 10px -20px $shadow-intense inset;
-$shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
 
 .body {
   height: 120vh;
-  background: $gradient-background;
+  background: $boxBackground;
   display: flex;
   flex-direction: row;
 
   .sidebar {
-    background: $dark-gradient;
+    background: $boxBackground;
     flex-grow: 2;
     width: 25vw;
-    box-shadow: $shadow-light 0px 3px 8px;
   }
 
   .bodyMain {
+    background: $textSecondary;
     width: 75vw;
     height: 120vh;
     flex-direction: row;
@@ -39,46 +24,31 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       height: 40vh;
 
       .bodyMainTopContent {
-        box-shadow: $shadow-inset;
-        width: 65%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 50vw;
+        @extend .flex-center;
         white-space: nowrap;
 
         .bodyMainTopText,
         .bodyMainTopPlaycount {
           padding: 0 3vw;
-          font-size: clamp(1vw, 2vw + 1vw, 10vw);
-          font-family: 'Spotify-Bold';
-          font-weight: 800;
-          background: $dark-gradient;
+          @extend .boxTitle;
+          text-align: center;
+          background: $boxBackground;
           background-clip: text;
           -webkit-text-fill-color: transparent;
-          text-align: center;
-          &.bodyMainTopPlaycount {
-            font-size: 3vw;
-            font-family: 'Spotify';
-            font-weight: 600;
-            background: -webkit-linear-gradient(45deg, #09009f, #32d390 80%);
-            background-clip: text;
-          }
+        }
+        .bodyMainTopPlaycount {
+          background: $gradientBg;
+          background-clip: text;
         }
       }
 
       .bodyMainTopCover {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 40%;
-        background: $dark-gradient;
-        box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+        @extend .flex-center;
+        width: 25vw;
+        background: $boxBackground;
 
-        img {
-          height: 90%;
-          width: 90%;
-          border-radius: 25px;
-        }
+        @extend .image;
       }
     }
 
@@ -91,7 +61,7 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       .bodyMainMiddleCoverMiddle,
       .bodyMainMiddleCoverLeft {
         width: 25vw;
-        background: $dark-gradient;
+        background: $boxBackground;
         display: flex;
       }
     }
@@ -101,26 +71,16 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       flex-direction: column;
       height: 100%;
       width: 25vw;
-      background-color: #181818;
+      background-color: $boxBackground;
 
       .text {
-        height: 14%;
+        height: 15%;
         width: 100%;
 
         display: flex;
         align-items: flex-start;
         p {
-          padding: 0% 5%;
-          font-family: 'Spotify-Bold';
-          font-size: 2vw;
-          font-weight: 800;
-          text-overflow: ellipsis;
-          text-wrap: nowrap;
-
-          background: linear-gradient(45deg, #ece9e6 0%, #ffffff 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
+          @extend .subHeading;
         }
       }
       .img {
@@ -130,14 +90,7 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
         align-items: center;
         justify-content: center;
 
-        img {
-          box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-          display: block;
-          object-fit: cover;
-          width: 90%;
-          height: 90%;
-          border-radius: 30px;
-        }
+        @extend .image;
       }
     }
 
@@ -149,86 +102,30 @@ $shadow-small: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
       .bodyMainBottomCover {
         width: 25vw;
         height: 40vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        img {
-          box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
-          display: block;
-          object-fit: cover;
-          width: 80%;
-          height: 80%;
-          border-radius: 30px;
-        }
+        padding: 0.5%;
+        @extend .flex-center;
+        @extend .image;
       }
 
       .bodyMainBottomContent {
-        box-shadow: $shadow-inset;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        @extend .flex-center;
         height: 40vh;
         width: 50vw;
         padding-top: 5vh;
 
         a {
-          font-size: 3vw;
-          font-weight: 600;
+          box-shadow: $buttonShadow;
           width: 40vw;
-          margin: auto;
           text-decoration: none;
-
-          padding: 1vw;
+          @extend .boxTitle;
+          padding: 3vw;
           text-align: center;
-          text-transform: uppercase;
           background-size: 200% auto;
-          color: white;
-          box-shadow: 0 0 20px #eee;
+          color: $textPrimary;
           border-radius: 10px;
-          background-image: linear-gradient(to right, #84fab0 0%, #8fd3f4 51%, #84fab0 100%);
+          background-image: $gradientBg;
         }
       }
     }
-  }
-}
-
-@media (max-width: 500px) {
-  .sidebar,
-  .bodyMainTopCover {
-    display: none;
-  }
-
-  .bodyMainTopContent {
-    position: relative;
-    width: 200%;
-    margin: 3vw;
-    box-shadow: none;
-
-    .bodyMainTopText {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 6vw;
-      padding: 0;
-      padding-bottom: 8vh;
-    }
-
-    .bodyMainTopPlaycount {
-      position: absolute;
-      top: 65%;
-      left: 50%;
-      transform: translate(-65%, -50%);
-      font-size: 6vw;
-      padding: 0;
-      padding-left: 15vw;
-    }
-  }
-
-  .bodyMainMiddle,
-  .bodyMainTop,
-  .bodyMainBottom,
-  .body {
-    height: max-content;
   }
 }
