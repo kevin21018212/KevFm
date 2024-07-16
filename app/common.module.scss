@@ -1,0 +1,127 @@
+$primaryColor: #90c693;
+$primary-hover-color: #78a679; // A slightly darker shade for hover effect
+$secondaryColor: #15706c;
+$secondaryHoverColor: #105955; // A slightly darker shade for hover effect
+$accentColor: #09009f;
+$accentSecondaryColor: #e8f89f;
+
+$textPrimary: #f0f0f0;
+$textSecondary: #e4e4e4;
+$textInverse: #0d0d0d;
+$boxShadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+$buttonShadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px;
+$gradientBg: -webkit-linear-gradient(45deg, $accentColor, $primaryColor 80%);
+
+.bg-shadow-round {
+  box-shadow: $boxShadow;
+  border-radius: 8px;
+}
+
+.bg-shadow {
+  box-shadow: $boxShadow;
+}
+
+.bgShadowWhite {
+  border-radius: 8px;
+  box-shadow: $boxShadow;
+}
+
+$containerBackground: #082c2c;
+$boxBackground: #101518;
+.container {
+  margin: 0 auto;
+  padding: 1rem;
+  gap: 2rem;
+}
+
+.pageContainer {
+  @extend .flex-center-column;
+  width: 90vw;
+  padding: 5vw;
+  gap: 2rem;
+}
+
+.gridDisplayContainer {
+  @extend .container;
+  border-radius: 8px;
+  box-shadow: $boxShadow;
+  background-color: $containerBackground;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+}
+.image {
+  img {
+    box-shadow: $boxShadow;
+    display: block;
+    object-fit: cover;
+    width: 90%;
+    height: 90%;
+    border-radius: 30px;
+  }
+}
+.imgCover {
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* Flex Utilities */
+
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flex-horizontal {
+  display: flex;
+  align-items: center;
+}
+
+.flex-center-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/*Typography*/
+.boxTitle {
+  font-size: 3vw;
+  font-family: "Spotify";
+  font-weight: 600;
+}
+
+.heading {
+  font-family: "Spotify-Bold";
+  font-size: 4vw;
+  font-weight: 800;
+}
+
+.subHeading {
+  padding: 0% 0% 0% 5%;
+  font-family: "Spotify-Bold";
+  font-size: 2vw;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  color: $textPrimary;
+}
+
+.title {
+  font-size: 4vw;
+  text-wrap: wrap;
+  padding-left: 2vw;
+  background: $gradientBg;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
