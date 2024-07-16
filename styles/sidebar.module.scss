@@ -1,5 +1,3 @@
-// styles/sidebar.module.scss
-
 @import "/app/common.module.scss";
 
 .sidebar {
@@ -32,7 +30,6 @@
       height: 7.5vh;
       border-radius: 50%;
       box-shadow: $boxShadow;
-      background-color: $secondaryColor;
     }
 
     p {
@@ -62,20 +59,15 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 1.5vh;
+    padding: 1vh 0.75vw;
     border-radius: 8px;
     background: $secondaryColor;
     box-shadow: $boxShadow;
     width: 100%;
 
     p {
-      margin: 0.5rem 0;
-      font-size: 1rem;
-      color: $textSecondary;
-    }
-
-    span {
+      font-size: 1vw;
       color: $textSecondary;
     }
 
@@ -86,6 +78,15 @@
       &:hover {
         color: $primary-hover-color;
       }
+    }
+
+    .nowPlaying {
+      color: $accentSecondaryColor;
+      font-weight: 500;
+      font-size: 1.1vw;
+    }
+    span {
+      color: $textSecondary;
     }
   }
 
@@ -114,7 +115,7 @@
         }
 
         span {
-          font-size: 1.2rem;
+          font-size: 1.25vw;
           color: $textPrimary;
         }
       }

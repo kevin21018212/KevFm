@@ -73,9 +73,7 @@ const Sidebar: React.FC = () => {
           >
             <motion.div
               className={styles.track}
-              variants={bounceVariants(index * 0.25)}
-              initial="hidden"
-              animate="visible"
+              variants={bounceVariants(index + 1 * 0.1)}
               whileHover="hover"
             >
               <p>
