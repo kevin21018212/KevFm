@@ -23,3 +23,10 @@
 .body {
   height: 130vh;
 }
+
+@media (max-width: 600px) {
+  .head,
+  .body {
+    height: auto;
+  }
+}

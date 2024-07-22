@@ -85,14 +85,21 @@
   }
 }
 
-@media (max-width: 500px) {
-  .headerImage {
-    display: none;
-  }
-
-  .headerContent {
-    width: 200%;
-    align-items: center;
+@media (max-width: 600px) {
+  .layout {
+    display: flex;
+    flex-direction: column;
+    height: 70vh;
+    .headerContent {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .headerImage {
+      width: 100%;
+      border-radius: 0;
+    }
   }
 
   .headerText,
