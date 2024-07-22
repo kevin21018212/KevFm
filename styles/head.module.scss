@@ -1,5 +1,5 @@
 /* styles/Head.module.scss */
-@import '/app/common.module.scss';
+@import "/app/common.module.scss";
 
 .layout {
   display: flex;
@@ -91,16 +91,27 @@
   .layout {
     display: flex;
     flex-direction: column;
-    height: 70vh;
+    height: 75vh;
     .headerContent {
       width: 100%;
       display: flex;
       justify-content: center;
       align-items: center;
+      h2 {
+        font-size: 3vh;
+      }
+      h1 {
+        font-size: 4.5vh;
+      }
     }
     .headerImage {
       width: 100%;
-      border-radius: 0;
+      border-radius: 15px;
+      .headerImageStackStreams {
+        p {
+          font-size: 3vh;
+        }
+      }
     }
   }
 

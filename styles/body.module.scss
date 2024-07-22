@@ -1,4 +1,4 @@
-@import '/app/common.module.scss';
+@import "/app/common.module.scss";
 
 .body {
   height: 130vh;
@@ -139,6 +139,7 @@
 
     .sidebar {
       width: 40vw;
+      border-radius: 0px 30px 0px 0px;
     }
 
     .bodyMain {
@@ -153,6 +154,10 @@
         .bodyMainTopContent {
           width: 60vw;
           height: 100%;
+          .bodyMainTopText,
+          .bodyMainTopPlaycount {
+            font-size: 2vh;
+          }
         }
         .bodyMainTopCover {
           width: 100%;
@@ -162,19 +167,26 @@
 
       .bodyMainMiddle {
         flex-direction: column;
-        height: auto;
+        height: 92.5vh;
         border-radius: 0px 0px 30px 30px;
         .bodyMainMiddleCoverRight,
         .bodyMainMiddleCoverMiddle,
         .bodyMainMiddleCoverLeft {
           width: 60vw;
+          margin: 0;
         }
       }
 
       .middleStuff {
         height: 30vh;
-        margin: 2.5% 0;
+        margin: 0%;
         width: 60vw;
+        .text {
+          p {
+            text-wrap: wrap;
+            font-size: 2vh;
+          }
+        }
       }
 
       .bodyMainBottom {
