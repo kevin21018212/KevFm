@@ -16,17 +16,7 @@
   height: 100vh; /* adjusted for the full height of the viewport */
   justify-content: space-between; /* ensures that Footer, Body, and Head are spaced out properly */
 }
-.head {
-  height: 55vh;
-}
-
+.head,
 .body {
-  height: 130vh;
-}
-
-@media (max-width: 600px) {
-  .head,
-  .body {
-    height: auto;
-  }
+  height: auto;
 }
