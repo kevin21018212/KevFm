@@ -35,7 +35,7 @@ $dark-mode: (
 
         .bodyMainTopText {
           padding: 0 0vw;
-          @extend .boxTitle;
+
           width: 25vw;
           height: 100%;
 
@@ -44,6 +44,7 @@ $dark-mode: (
             text-align: center;
             text-wrap: wrap;
             color: $textInverse;
+            @extend .boxTitle;
             @include theme-colors($light-mode); // Default to light mode color
 
             // Dark mode styles
@@ -57,10 +58,11 @@ $dark-mode: (
           padding: 0;
           width: 25vw;
           height: 100%;
-          @extend .boxTitle;
+
           @extend .flex-center;
 
           p {
+            @extend .boxTitle;
             color: $textInverse;
             text-align: center;
             text-wrap: wrap;
