@@ -26,16 +26,18 @@
 
         .bodyMainTopText,
         .bodyMainTopPlaycount {
-          padding: 0 3vw;
+          padding: 0 2vw;
           @extend .boxTitle;
           text-align: center;
           background: $boxBackground;
+          -webkit-background-clip: text;
           background-clip: text;
           -webkit-text-fill-color: transparent;
         }
 
         .bodyMainTopPlaycount {
           background: $gradientBg;
+          -webkit-background-clip: text;
           background-clip: text;
         }
       }
@@ -119,11 +121,13 @@
         a {
           box-shadow: $buttonShadow;
           width: 40vw;
+          @extend .flex-center;
           text-decoration: none;
-          text-wrap: wrap;
+          word-wrap: break-word;
           @extend .boxTitle;
           padding: 3vw;
           text-align: center;
+          -webkit-background-size: 200% auto;
           background-size: 200% auto;
           color: $textPrimary;
           border-radius: 10px;
