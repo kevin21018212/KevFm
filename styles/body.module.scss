@@ -32,29 +32,35 @@ $dark-mode: (
       .bodyMainTopContent {
         width: 50vw;
         @extend .flex-center;
-        white-space: nowrap;
 
         .bodyMainTopText {
-          padding: 0 2vw;
+          padding: 0 0vw;
           @extend .boxTitle;
-          text-align: center;
-          @include theme-colors($light-mode); // Default to light mode color
 
-          // Dark mode styles
-          @media (prefers-color-scheme: dark) {
-            @include theme-colors($dark-mode);
+          p {
+            text-align: center;
+            text-wrap: wrap;
+            @include theme-colors($light-mode); // Default to light mode color
+
+            // Dark mode styles
+            @media (prefers-color-scheme: dark) {
+              @include theme-colors($dark-mode);
+            }
           }
         }
 
         .bodyMainTopPlaycount {
-          padding: 0 2vw;
+          padding: 0;
           @extend .boxTitle;
-          text-align: center;
-          background: $gradientBg;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-          color: transparent; // Ensure text color is transparent
+
+          p {
+            text-align: center;
+            text-wrap: wrap;
+            background: $gradientBg;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
         }
       }
 
@@ -179,6 +185,7 @@ $dark-mode: (
           .bodyMainTopText,
           .bodyMainTopPlaycount {
             font-size: 2vh;
+            width: 50%;
           }
         }
 

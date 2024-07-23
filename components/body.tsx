@@ -66,10 +66,10 @@ const Body: React.FC = () => {
         <motion.div className={styles.bodyMainTop} variants={containerVariants}>
           <motion.div className={styles.bodyMainTopContent}>
             <motion.div className={styles.bodyMainTopText}>
-              Top Artist: <p>{topAlbum.name}</p>
+              <p> Top Artist: {topAlbum.name}</p>
             </motion.div>
             <motion.div className={styles.bodyMainTopPlaycount}>
-              Playcount: <p>{topAlbum.playcount}</p>
+              <p> Playcount: {topAlbum.playcount}</p>
             </motion.div>
           </motion.div>
           <div className={styles.bodyMainTopCover}>
