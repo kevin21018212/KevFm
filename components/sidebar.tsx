@@ -7,7 +7,6 @@ import { getRecentTracks } from "@/utils/getRecentTracks";
 import { FaGithub } from "react-icons/fa";
 import {
   containerVariants,
-  textVariants,
   linkVariants,
   imageVariants,
   bounceVariants,

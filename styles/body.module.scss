@@ -1,5 +1,15 @@
 @import "/app/common.module.scss";
+$light-mode: (
+  text-color: $textInverse,
+);
 
+$dark-mode: (
+  text-color: $textPrimary,
+);
+
+@mixin theme-colors($theme) {
+  color: map-get($theme, text-color);
+}
 .body {
   height: auto;
   display: flex;
@@ -24,21 +34,26 @@
         @extend .flex-center;
         white-space: nowrap;
 
-        .bodyMainTopText,
+        .bodyMainTopText {
+          padding: 0 2vw;
+          @extend .boxTitle;
+          text-align: center;
+          @include theme-colors($light-mode); // Default to light mode color
+
+          // Dark mode styles
+          @media (prefers-color-scheme: dark) {
+            @include theme-colors($dark-mode);
+          }
+        }
+
         .bodyMainTopPlaycount {
           padding: 0 2vw;
           @extend .boxTitle;
           text-align: center;
-          background: $boxBackground;
-          -webkit-background-clip: text;
-          background-clip: text;
-          -webkit-text-fill-color: transparent;
-        }
-
-        .bodyMainTopPlaycount {
           background: $gradientBg;
           -webkit-background-clip: text;
           background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
       }
 
