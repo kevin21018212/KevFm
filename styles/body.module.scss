@@ -31,15 +31,19 @@ $dark-mode: (
 
       .bodyMainTopContent {
         width: 50vw;
-        @extend .flex-center;
+        display: flex;
 
         .bodyMainTopText {
           padding: 0 0vw;
           @extend .boxTitle;
+          width: 25vw;
+          height: 100%;
 
+          @extend .flex-center;
           p {
             text-align: center;
             text-wrap: wrap;
+            color: $textInverse;
             @include theme-colors($light-mode); // Default to light mode color
 
             // Dark mode styles
@@ -51,9 +55,13 @@ $dark-mode: (
 
         .bodyMainTopPlaycount {
           padding: 0;
+          width: 25vw;
+          height: 100%;
           @extend .boxTitle;
+          @extend .flex-center;
 
           p {
+            color: $textInverse;
             text-align: center;
             text-wrap: wrap;
             background: $gradientBg;
