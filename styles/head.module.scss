@@ -73,15 +73,16 @@
       grid-row: 15 / span 3;
       grid-column: 2 / span 6;
       z-index: 100;
-
+      text-align: center;
       @extend .flex-center;
 
       p {
         background: var(--bg2);
         @extend .subHeading;
         text-wrap: wrap;
-        padding: 0;
+        padding: 1vh 0;
         margin: 0;
+        border-radius: 7.5px;
       }
     }
   }
@@ -92,22 +93,29 @@
     display: flex;
     flex-direction: column;
     height: 75vh;
+    margin: 5% 0;
+    border-radius: 15px;
     .headerContent {
       width: 100%;
       display: flex;
-      justify-content: center;
-      align-items: center;
       h2 {
-        font-size: 3vh;
+        font-size: 3.25vh;
       }
       h1 {
-        font-size: 4.5vh;
+        font-size: 4vh;
+        margin: 0 2.5%;
       }
     }
     .headerImage {
       width: 100%;
+
       border-radius: 15px;
+      .headerImageStackArtist {
+        grid-column: 3 / span 12;
+        grid-row: 3 / span 14;
+      }
       .headerImageStackStreams {
+        grid-column: 2 / span 7;
         p {
           font-size: 3vh;
         }
