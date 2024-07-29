@@ -4,7 +4,7 @@ import { getServerSideProps } from "./getSSR";
 export const getRecentTracks = async (): Promise<Track[] | null> => {
   try {
     const { userName, apiKey }: any = (await getServerSideProps()).props;
-    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${userName}&api_key=${apiKey}&limit=6&format=json`;
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=${userName}&api_key=${apiKey}&limit=8&format=json`;
 
     const response = await axios.get(url);
 

@@ -1,15 +1,5 @@
 @import "/app/common.module.scss";
-$light-mode: (
-  text-color: $textInverse,
-);
 
-$dark-mode: (
-  text-color: $textPrimary,
-);
-
-@mixin theme-colors($theme) {
-  color: map-get($theme, text-color);
-}
 .body {
   height: auto;
   display: flex;
@@ -36,7 +26,7 @@ $dark-mode: (
         .bodyMainTopText {
           padding: 0 0vw;
 
-          width: 25vw;
+          width: 50%;
           height: 100%;
 
           @extend .flex-center;
@@ -45,18 +35,12 @@ $dark-mode: (
             text-wrap: wrap;
             color: $textInverse;
             @extend .boxTitle;
-            @include theme-colors($light-mode); // Default to light mode color
-
-            // Dark mode styles
-            @media (prefers-color-scheme: dark) {
-              @include theme-colors($dark-mode);
-            }
           }
         }
 
         .bodyMainTopPlaycount {
           padding: 0;
-          width: 25vw;
+          width: 50%;
           height: 100%;
 
           @extend .flex-center;
@@ -73,14 +57,13 @@ $dark-mode: (
           }
         }
       }
-
-      .bodyMainTopCover {
-        @extend .flex-center;
-        width: 25vw;
-        background: $boxBackground;
-        box-shadow: $buttonShadow;
-        @extend .image;
-      }
+    }
+    .bodyMainTopCover {
+      @extend .flex-center;
+      width: 25vw;
+      background: $boxBackground;
+      box-shadow: $buttonShadow;
+      @extend .image;
     }
 
     .bodyMainMiddle {
