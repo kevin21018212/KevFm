@@ -51,7 +51,7 @@
   }
 
   .recentSection {
-    height: 95vh;
+    height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -134,7 +134,7 @@
 @media (max-width: 600px) {
   .sidebar {
     height: auto;
-    border-radius: 0 15px 0 20px;
+    border-radius: 0 20px 20px 0;
 
     .infoSection,
     .recentSection {
