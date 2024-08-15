@@ -177,8 +177,11 @@
 
           .bodyMainTopText,
           .bodyMainTopPlaycount {
-            font-size: 2vh;
-            width: 50%;
+            p {
+              font-size: 2.75vh;
+            }
+            padding: 0 2.5%;
+            width: 47.5%;
           }
         }
 
@@ -205,7 +208,7 @@
         height: 30vh;
         margin: 0;
         width: 60vw;
-
+        box-shadow: none;
         .text {
           p {
             text-wrap: wrap;
@@ -218,7 +221,7 @@
         width: 100vw;
         margin-left: -40vw;
         height: 25vh;
-        margin-top: 6vh;
+        margin-top: 3vh;
 
         .bodyMainBottomCover {
           width: 100vw;
