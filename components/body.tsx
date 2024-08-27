@@ -3,11 +3,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import styles from "../styles/body.module.scss";
 // Adjust the import path as necessary
-import {
-  bounceVariants,
-  containerVariants,
-  linkVariants,
-} from "@/utils/animations";
+import { bounceVariants, containerVariants, linkVariants } from "@/utils/animations";
 import { getTopAlbum } from "@/utils/getTopAlbum";
 import { getTopTracks } from "@/utils/getTopTracks";
 import { ImageCard } from "@/utils/imageCard";
@@ -33,10 +29,7 @@ const Body: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [album, tracks] = await Promise.all([
-          getTopAlbum(),
-          getTopTracks(),
-        ]);
+        const [album, tracks] = await Promise.all([getTopAlbum(), getTopTracks()]);
         if (album) setTopAlbum(album);
         if (tracks) setTopTracks(tracks);
         if (!album || !tracks) throw new Error();
@@ -52,12 +45,7 @@ const Body: React.FC = () => {
   if (!topAlbum || !topTracks) return <></>;
 
   return (
-    <motion.div
-      className={styles.body}
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <motion.div className={styles.body} variants={containerVariants} initial="hidden" animate="visible">
       <div className={styles.sidebar}>
         <Sidebar />
       </div>
@@ -65,47 +53,34 @@ const Body: React.FC = () => {
       <motion.div className={styles.bodyMain}>
         <motion.div className={styles.bodyMainTop} variants={containerVariants}>
           <motion.div className={styles.bodyMainTopContent}>
-            <motion.div
-              className={styles.bodyMainTopText}
-              variants={bounceVariants(0.2)}
-            >
+            <motion.div className={styles.bodyMainTopText} variants={bounceVariants(0.2)}>
               <p> Top Artist: {topAlbum.name}</p>
             </motion.div>
-            <motion.div
-              className={styles.bodyMainTopPlaycount}
-              variants={bounceVariants(0.3)}
-            >
+            <motion.div className={styles.bodyMainTopPlaycount} variants={bounceVariants(0.3)}>
               <p> Playcount: {topAlbum.playcount}</p>
             </motion.div>
           </motion.div>
           <div className={styles.bodyMainTopCover}>
-            <img src={topAlbum.imageURL} alt={topAlbum.name} />
+            <motion.img
+              src={topAlbum.imageURL}
+              alt={topAlbum.name}
+              variants={bounceVariants(0.5)}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+            />
           </div>
         </motion.div>
 
         <motion.div className={styles.bodyMainMiddle}>
           {topTracks.slice(0, 3).map((track, index) => (
-            <motion.div
-              key={index}
-              className={
-                styles[
-                  `bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`
-                ]
-              }
-            >
-              <ImageCard
-                src={track.imageURL}
-                alt={track.name}
-                delay={0.4 + index * 0.2}
-              />
+            <motion.div key={index} className={styles[`bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`]}>
+              <ImageCard src={track.imageURL} alt={track.name} delay={0.4 + index * 0.2} />
             </motion.div>
           ))}
         </motion.div>
 
-        <motion.div
-          className={styles.bodyMainBottom}
-          variants={containerVariants}
-        >
+        <motion.div className={styles.bodyMainBottom} variants={containerVariants}>
           <div className={styles.bodyMainBottomCover}>
             <motion.img
               variants={bounceVariants(0.9)}
@@ -115,13 +90,9 @@ const Body: React.FC = () => {
               animate="visible"
             />
           </div>
-          <motion.div
-            className={styles.bodyMainBottomContent}
-            whileHover="hover"
-            variants={linkVariants}
-          >
+          <motion.div className={styles.bodyMainBottomContent} whileHover="hover" variants={linkVariants}>
             <a
-              href="https://open.spotify.com/playlist/5pLSoW36SKxvWNivMPpSzz?si=158b467efa0f473f"
+              href="https://open.spotify.com/playlist/6p9ZGJXs8QvV5U4yEHxo0V?si=311ab1edfa46420e"
               rel="noopener noreferrer"
               target="_blank"
             >
