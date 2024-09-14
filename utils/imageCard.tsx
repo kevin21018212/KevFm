@@ -17,7 +17,7 @@ export const ImageCard: React.FC<{
         whileHover="hover"
       />
     </div>
-    <motion.div className={styles.text} variants={bounceVariants(delay + 0.1)}>
+    <motion.div className={styles.text}>
       <p>{alt}</p>
     </motion.div>
   </div>
