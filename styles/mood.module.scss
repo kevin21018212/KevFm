@@ -1,0 +1,268 @@
+/* styles/mood.module.scss */
+@import "/app/common.module.scss";
+
+.moodContainer {
+  background-color: $boxBackground;
+  padding: 3rem;
+  margin: 2rem 0;
+  border-radius: 20px;
+  box-shadow: $boxShadow;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3rem;
+
+  h2 {
+    color: $textPrimary;
+    font-size: 3vw;
+    @extend .heading;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    background: $gradientBg;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .cardsContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 300px;
+    gap: 2rem;
+    width: 100%;
+    max-width: 1100px;
+
+    /* Responsive adjustments */
+    @media (max-width: 1100px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 700px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    background-color: $secondaryColor;
+    padding: 2rem;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 30px rgba(255, 255, 255, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    grid-column: span 1;
+    grid-row: span 1;
+
+    .cardContent {
+      text-align: center;
+      z-index: 2;
+
+      h3 {
+        margin-bottom: 1rem;
+        font-size: 1.5vw;
+        color: $primaryColor;
+        @extend .subHeading;
+      }
+
+      p {
+        font-size: 1.8vw;
+        font-weight: 700;
+        color: $textPrimary;
+      }
+    }
+
+    &:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(0, 0, 0, 0.3));
+      mix-blend-mode: screen;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(255, 255, 255, 0.3);
+    }
+
+    &:hover:before {
+      opacity: 1;
+    }
+
+    /* Card background holographic effect */
+    &:after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, $primaryColor, $secondaryColor, $accentColor);
+      opacity: 0.2;
+      z-index: 1;
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      transform: rotate(30deg) scale(0.8);
+    }
+
+    &:hover:after {
+      opacity: 0.4;
+      transform: rotate(45deg) scale(1.2);
+    }
+  }
+
+  /* Assign different spans for grid */
+  .card15 {
+    grid-column: span 2;
+    grid-row: span 2;
+  }
+
+  .card1h {
+    grid-column: span 1;
+    grid-row: span 1;
+  }
+
+  .cardDay {
+    grid-column: span 1;
+    grid-row: span 2;
+  }
+
+  .cardWeek {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+
+  /* Mood-specific Styles */
+  .pumpedUp {
+    background-color: #ff5722; // Deep Orange
+  }
+
+  .slutty {
+    background-color: #e91e63; // Pink
+  }
+
+  .blissful {
+    background-color: #4caf50; // Green
+  }
+
+  .vibin {
+    background-color: #9c27b0; // Purple
+  }
+
+  .downBad {
+    background-color: #3f51b5; // Indigo
+  }
+
+  .fightingDemons {
+    background-color: #f44336; // Red
+  }
+
+  .trappin {
+    background-color: #ff9800; // Orange
+  }
+
+  .chilling {
+    background-color: #2196f3; // Blue
+  }
+
+  .inTheTrenches {
+    background-color: #00bcd4; // Cyan
+  }
+
+  .sassy {
+    background-color: #cddc39; // Lime
+    color: $textInverse;
+  }
+
+  .petty {
+    background-color: #795548; // Brown
+  }
+
+  .dailedIn {
+    background-color: #607d8b; // Blue Grey
+  }
+
+  .whiteWoman {
+    background-color: #ffffff; // White
+    color: $textInverse;
+    border: 1px solid #ccc;
+  }
+
+  .neutral {
+    background-color: #9e9e9e; // Grey
+  }
+
+  /* Loading and Error Styles */
+  .loading,
+  .error,
+  .noData {
+    font-size: 2vw;
+    color: $textPrimary;
+    text-align: center;
+  }
+
+  /* Responsive Design Enhancements */
+  @media (max-width: 1100px) {
+    .card15,
+    .cardWeek {
+      grid-column: span 2;
+      grid-row: span 1;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .card15,
+    .cardWeek {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+
+    .cardDay {
+      grid-row: span 1;
+    }
+  }
+
+  @media (max-width: 500px) {
+    .moodContainer {
+      padding: 1.5rem;
+
+      h2 {
+        font-size: 5vw;
+      }
+
+      .cardsContainer {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        max-width: 100%;
+      }
+
+      .card {
+        padding: 1.5rem;
+
+        .cardContent {
+          h3 {
+            font-size: 3.5vw;
+          }
+
+          p {
+            font-size: 2.5vw;
+          }
+        }
+      }
+
+      .loading,
+      .error,
+      .noData {
+        font-size: 4vw;
+      }
+    }
+  }
+}

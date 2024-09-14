@@ -2,23 +2,18 @@
 
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import styles from "../styles/head.module.scss"; // Ensure path matches your project structure
-import { getCurrentTrack } from "@/utils/getCurrentTrack"; // Adjust import path as necessary
-import {
-  containerVariants,
-  textVariants,
-  h1Variants,
-  bounceVariants,
-} from "@/utils/animations";
+import styles from "../styles/head.module.scss";
+import { containerVariants, textVariants, h1Variants, bounceVariants } from "@/utils/animations";
+import { TrackData } from "@/utils/types";
+import { getCurrentTrack } from "@/utils/fetch/getCurrentTrack";
 
-
-const Head: React.FC = () => {
+const Head = ({ spotifyAccessToken }: any) => {
   const [trackData, setTrackData] = useState<TrackData | null>(null);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getCurrentTrack();
+      const data = await getCurrentTrack(spotifyAccessToken);
       if (data) {
         setTrackData(data);
         document.documentElement.style.setProperty("--bg", data.bgColor);
@@ -37,12 +32,7 @@ const Head: React.FC = () => {
   const { name, artist, imageSrc, albumArtSrc } = trackData;
 
   return (
-    <motion.div
-      className={styles.layout}
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
+    <motion.div className={styles.layout} variants={containerVariants} initial="hidden" animate="visible">
       <motion.div className={styles.headerContent}>
         <motion.h2 variants={textVariants}>Right Now Kev is Bumpin</motion.h2>
         <motion.h1 variants={h1Variants}>{name}</motion.h1>

@@ -1,26 +1,28 @@
-interface User {
+export interface User {
   id: string;
   name: string;
-  realname: string;
-  url: string;
+  displayName: string;
+  profileURL: string;
   image: string;
-  country: string;
-  age: number;
-  gender: string;
-  subscriber: boolean;
+  followers: number;
+  country: string | null;
+}
+export interface Artist {
+  name: string;
   playcount: number;
-  playlists: number;
-  registered: string;
+  imageURL: string;
+  url: string;
 }
 
-interface Track {
+export interface Track {
   name: string;
   artist: string;
+  imageURL: string;
   url: string;
-  nowplaying: boolean;
-  date?: string;
+  playedAt?: string;
+  nowplaying?: boolean;
 }
-interface TrackData {
+export interface TrackData {
   name: string;
   artist: string;
   imageSrc: string;

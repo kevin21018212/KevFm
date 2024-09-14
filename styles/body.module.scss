@@ -61,7 +61,6 @@
       @extend .flex-center;
       width: 25vw;
       background: $boxBackground;
-
       @extend .image;
     }
 
@@ -118,7 +117,6 @@
       width: 75vw;
       display: flex;
       align-items: center;
-      border: 1px dotted red;
 
       .bodyMainBottomCover {
         width: 25vw;
