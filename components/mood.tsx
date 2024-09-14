@@ -1,9 +1,10 @@
-// components/MoodComponent.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import styles from "../styles/mood.module.scss";
-import { MoodData, getRecentMoods } from "@/utils/fetch/getRecentMoods";
+import { getRecentMoods, MoodData } from "@/utils/fetch/getRecentMoods";
+import { containerVariants, bounceVariants, fadeInOutVariants } from "@/utils/animations"; // Import variants
 
 const MoodComponent = ({ spotifyAccessToken }: any) => {
   const [moodData, setMoodData] = useState<MoodData | null>(null);
@@ -30,16 +31,13 @@ const MoodComponent = ({ spotifyAccessToken }: any) => {
     fetchMoods();
   }, [spotifyAccessToken]);
 
-  if (loading) {
-    return <div className={styles.loading}>Loading moods...</div>;
-  }
-
-  if (error) {
-    return <div className={styles.error}>Error: {error}</div>;
-  }
-
   if (!moodData) {
-    return <div className={styles.noData}>No mood data available.</div>;
+    return (
+      <div className={styles.moodContainer}>
+        <h2>kevs Recents moods</h2>
+        <div className={styles.cardsContainer}></div>
+      </div>
+    );
   }
 
   // Helper function to get mood class based on mood value
@@ -78,42 +76,66 @@ const MoodComponent = ({ spotifyAccessToken }: any) => {
   };
 
   return (
-    <div className={styles.moodContainer}>
+    <motion.div className={styles.moodContainer} variants={containerVariants} initial="hidden" animate="visible">
       <h2>kevs Recents moods</h2>
       <div className={styles.cardsContainer}>
         {/* 15 Minutes Card */}
-        <div className={`${styles.card} ${styles.card15} ${getMoodClass(moodData.fifteenMinutes)}`}>
+        <motion.div
+          className={`${styles.card} ${styles.card15} ${getMoodClass(moodData.fifteenMinutes)}`}
+          variants={bounceVariants(0.2)}
+          initial="hidden"
+          animate="visible"
+          whileHover="hover"
+        >
           <div className={styles.cardContent}>
             <h3>Last 15 Minutes</h3>
             <p>{moodData.fifteenMinutes}</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* 1 Hour Card */}
-        <div className={`${styles.card} ${styles.card1h} ${getMoodClass(moodData.hour)}`}>
+        <motion.div
+          className={`${styles.card} ${styles.card1h} ${getMoodClass(moodData.hour)}`}
+          variants={bounceVariants(0.4)}
+          initial="hidden"
+          animate="visible"
+          whileHover="hover"
+        >
           <div className={styles.cardContent}>
             <h3>Last Hour</h3>
             <p>{moodData.hour}</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Day Card */}
-        <div className={`${styles.card} ${styles.cardDay} ${getMoodClass(moodData.day)}`}>
+        <motion.div
+          className={`${styles.card} ${styles.cardDay} ${getMoodClass(moodData.day)}`}
+          variants={bounceVariants(0.6)}
+          initial="hidden"
+          animate="visible"
+          whileHover="hover"
+        >
           <div className={styles.cardContent}>
             <h3>Last Day</h3>
             <p>{moodData.day}</p>
           </div>
-        </div>
+        </motion.div>
 
         {/* Week Card */}
-        <div className={`${styles.card} ${styles.cardWeek} ${getMoodClass(moodData.week)}`}>
+        <motion.div
+          className={`${styles.card} ${styles.cardWeek} ${getMoodClass(moodData.week)}`}
+          variants={bounceVariants(0.8)}
+          initial="hidden"
+          animate="visible"
+          whileHover="hover"
+        >
           <div className={styles.cardContent}>
             <h3>Last Week</h3>
             <p>{moodData.week}</p>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

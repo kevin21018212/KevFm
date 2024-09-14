@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./page.module.css";
 import Body from "@/components/body";
-import HeadComponent from "@/components/head";
+
 import MoodDisplay from "@/components/mood";
+import { Head } from "@/components/head";
 
 const App: React.FC = () => {
   const [spotifyAccessToken, setSpotifyAccessToken] = useState<string | null>(null);
@@ -27,22 +28,21 @@ const App: React.FC = () => {
     fetchSpotifyToken();
   }, []);
 
-  if (loading) {
-    return <div className={styles.loading}>Loading...</div>;
-  }
-
-  if (error || !spotifyAccessToken) {
+  if (error) {
     return <div className={styles.error}>Error: {error || "No access token available."}</div>;
+  }
+  if (loading) {
+    return <></>;
   }
 
   return (
     <div className={styles.app}>
       <div className={styles.head}>
-        <HeadComponent spotifyAccessToken={spotifyAccessToken} />
+        <Head spotifyAccessToken={spotifyAccessToken} />
       </div>
       <MoodDisplay spotifyAccessToken={spotifyAccessToken} />
       <div className={styles.body}>
-        <Body spotifyAccessToken={spotifyAccessToken} />
+        <Body spotifyAccessToken={spotifyAccessToken || ""} />
       </div>
     </div>
   );

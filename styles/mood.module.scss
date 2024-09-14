@@ -3,15 +3,16 @@
 
 .moodContainer {
   background-color: $boxBackground;
-  padding: 3rem;
-  margin: 2rem 0;
+  padding: 4vh 0;
+  margin: 2vh 0;
   border-radius: 20px;
   box-shadow: $boxShadow;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
+  min-height: 65vh;
 
+  /* Heading */
   h2 {
     color: $textPrimary;
     font-size: 3vw;
@@ -19,21 +20,22 @@
     margin-bottom: 2rem;
     text-transform: uppercase;
     letter-spacing: 2px;
-    background: $gradientBg;
+    background: $textPrimary;
+    background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    background-clip: text;
   }
 
+  /* Cards Container */
   .cardsContainer {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-auto-rows: 300px;
-    gap: 2rem;
+    grid-auto-rows: 120px;
+    gap: 1rem;
     width: 100%;
-    max-width: 1100px;
+    max-width: 50vw;
 
-    /* Responsive adjustments */
+    /* Responsive Adjustments */
     @media (max-width: 1100px) {
       grid-template-columns: repeat(2, 1fr);
     }
@@ -43,9 +45,10 @@
     }
   }
 
+  /* Individual Card */
   .card {
     background-color: $secondaryColor;
-    padding: 2rem;
+    padding: 1rem;
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 30px rgba(255, 255, 255, 0.2);
     display: flex;
@@ -58,24 +61,25 @@
     grid-column: span 1;
     grid-row: span 1;
 
+    /* Card Content */
     .cardContent {
       text-align: center;
       z-index: 2;
 
       h3 {
-        margin-bottom: 1rem;
-        font-size: 1.5vw;
-        color: $primaryColor;
+        margin-left: -5%;
+        font-size: 2.25vw;
         @extend .subHeading;
       }
 
       p {
-        font-size: 1.8vw;
-        font-weight: 700;
-        color: $textPrimary;
+        font-size: 2vw;
+        font-weight: 500;
+        color: $textSecondary;
       }
     }
 
+    /* Overlay Effects */
     &:before {
       content: "";
       position: absolute;
@@ -89,16 +93,6 @@
       transition: opacity 0.4s ease;
     }
 
-    &:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(255, 255, 255, 0.3);
-    }
-
-    &:hover:before {
-      opacity: 1;
-    }
-
-    /* Card background holographic effect */
     &:after {
       content: "";
       position: absolute;
@@ -113,13 +107,23 @@
       transform: rotate(30deg) scale(0.8);
     }
 
+    /* Hover States */
+    &:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(255, 255, 255, 0.3);
+    }
+
+    &:hover:before {
+      opacity: 1;
+    }
+
     &:hover:after {
       opacity: 0.4;
       transform: rotate(45deg) scale(1.2);
     }
   }
 
-  /* Assign different spans for grid */
+  /* Grid Span Variants */
   .card15 {
     grid-column: span 2;
     grid-row: span 2;
@@ -140,7 +144,7 @@
     grid-row: span 1;
   }
 
-  /* Mood-specific Styles */
+  /* Mood-Specific Styles */
   .pumpedUp {
     background-color: #ff5722; // Deep Orange
   }
@@ -200,7 +204,7 @@
     background-color: #9e9e9e; // Grey
   }
 
-  /* Loading and Error Styles */
+  /* Loading and Error States */
   .loading,
   .error,
   .noData {
@@ -231,38 +235,36 @@
   }
 
   @media (max-width: 500px) {
-    .moodContainer {
+    padding: 1.5rem;
+
+    h2 {
+      font-size: 5vw;
+    }
+
+    .cardsContainer {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 100%;
+    }
+
+    .card {
       padding: 1.5rem;
 
-      h2 {
-        font-size: 5vw;
-      }
+      .cardContent {
+        h3 {
+          font-size: 3.5vw;
+        }
 
-      .cardsContainer {
-        grid-template-columns: 1fr;
-        gap: 1rem;
-        max-width: 100%;
-      }
-
-      .card {
-        padding: 1.5rem;
-
-        .cardContent {
-          h3 {
-            font-size: 3.5vw;
-          }
-
-          p {
-            font-size: 2.5vw;
-          }
+        p {
+          font-size: 2.5vw;
         }
       }
+    }
 
-      .loading,
-      .error,
-      .noData {
-        font-size: 4vw;
-      }
+    .loading,
+    .error,
+    .noData {
+      font-size: 4vw;
     }
   }
 }

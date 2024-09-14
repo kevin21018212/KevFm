@@ -79,3 +79,17 @@ export const trackVariants: Variants = {
   hidden: { opacity: 0, y: 50 },
   visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50 } },
 };
+// Slide down animation for the entire image stack
+export const slideDownVariants = {
+  hidden: { opacity: 0, y: -30 }, // Smaller value to slide in less far
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      type: "spring",
+      stiffness: 100,
+      when: "beforeChildren", // Ensure children animate after parent
+      staggerChildren: 0.2, // Stagger animation for children
+    },
+  },
+};

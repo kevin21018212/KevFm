@@ -1,28 +1,53 @@
+/* Body.tsx */
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import styles from "../styles/body.module.scss";
 import { bounceVariants, containerVariants, linkVariants } from "@/utils/animations";
 import { ImageCard } from "@/utils/imageCard";
 import Sidebar from "./sidebar";
-import { Artist, Track } from "@/utils/types";
+import { Artist, Track, User } from "@/utils/types";
 import { getTopArtist } from "@/utils/fetch/getTopArtist";
 import { getTopTracks } from "@/utils/fetch/getTopTracks";
-const Body = ({ spotifyAccessToken }: any) => {
-  const [topartist, setTopartist] = useState<Artist | null>(null);
+import { getUserInfo } from "@/utils/fetch/getUserInfo";
+import { getRecentTracks } from "@/utils/fetch/getRecentTracks";
+
+interface BodyProps {
+  spotifyAccessToken: string;
+}
+
+const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: any | null) => {
+  const [topArtist, setTopArtist] = useState<Artist | null>(null);
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
+  const [userInfo, setUserInfo] = useState<User | null>(null);
+  const [recentTracks, setRecentTracks] = useState<Track[] | null>(null);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
+    if (!spotifyAccessToken) {
+      setError("No Spotify access token provided.");
+      return;
+    }
+
     const fetchData = async () => {
       try {
-        const [artist, tracks] = await Promise.all([
+        const [artist, tracks, user, recent] = await Promise.all([
           getTopArtist(spotifyAccessToken),
           getTopTracks(spotifyAccessToken),
+          getUserInfo(spotifyAccessToken),
+          getRecentTracks(spotifyAccessToken),
         ]);
-        if (artist) setTopartist(artist);
+
+        if (artist) setTopArtist(artist);
         if (tracks) setTopTracks(tracks);
-        if (!artist || !tracks) throw new Error("Failed to fetch data from Spotify");
+        if (user) setUserInfo(user);
+        if (recent) setRecentTracks(recent);
+
+        // Check if any data is missing
+        if (!artist || !tracks || !user || !recent) {
+          throw new Error("Failed to fetch all required data from Spotify.");
+        }
       } catch (err: any) {
         console.error(err);
         setError("Whoops! Something went wrong with Spotify.");
@@ -30,34 +55,42 @@ const Body = ({ spotifyAccessToken }: any) => {
     };
 
     fetchData();
-  }, [[spotifyAccessToken]]);
+  }, [spotifyAccessToken]);
 
+  // Handle error state
   if (error) return <p>{error}</p>;
-  if (!topartist || !topTracks) return <></>;
 
-  if (!spotifyAccessToken) {
-    return <p>Loading...</p>;
-  }
+  // Handle loading state
+  if (!topArtist || !topTracks || !userInfo || !recentTracks)
+    return (
+      <motion.div className={styles.body} variants={containerVariants} initial="hidden" animate="visible">
+        <div className={styles.sidebar}>
+          <Sidebar spotifyAccessToken={spotifyAccessToken} userInfo={null} recentTracks={null} />
+        </div>
+        <motion.div className={styles.bodyMain}></motion.div>
+      </motion.div>
+    );
+
   return (
     <motion.div className={styles.body} variants={containerVariants} initial="hidden" animate="visible">
       <div className={styles.sidebar}>
-        <Sidebar spotifyAccessToken={spotifyAccessToken} />
+        <Sidebar spotifyAccessToken={spotifyAccessToken} userInfo={userInfo} recentTracks={recentTracks} />
       </div>
 
       <motion.div className={styles.bodyMain}>
         <motion.div className={styles.bodyMainTop} variants={containerVariants}>
           <motion.div className={styles.bodyMainTopContent}>
             <motion.div className={styles.bodyMainTopText} variants={bounceVariants(0.2)}>
-              <p> Top Artist: {topartist.name}</p>
+              <p>Top Artist: {topArtist.name}</p>
             </motion.div>
             <motion.div className={styles.bodyMainTopPlaycount} variants={bounceVariants(0.3)}>
-              <p> Playcount: {topartist.playcount}</p>
+              <p>Playcount: {topArtist.playcount}</p>
             </motion.div>
           </motion.div>
           <div className={styles.bodyMainTopCover}>
             <motion.img
-              src={topartist.imageURL}
-              alt={topartist.name}
+              src={topArtist.imageURL}
+              alt={topArtist.name}
               variants={bounceVariants(0.5)}
               initial="hidden"
               animate="visible"
@@ -68,7 +101,7 @@ const Body = ({ spotifyAccessToken }: any) => {
 
         <motion.div className={styles.bodyMainMiddle}>
           {topTracks.slice(0, 3).map((track, index) => (
-            <motion.div key={index} className={styles[`bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`]}>
+            <motion.div key={track.name} className={styles[`bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`]}>
               <ImageCard src={track.imageURL} alt={track.name} delay={0.4 + index * 0.2} />
             </motion.div>
           ))}
