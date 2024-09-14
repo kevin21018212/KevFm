@@ -51,7 +51,8 @@ const getRecentlyPlayedTrack = async (spotifyAccessToken: string): Promise<Track
 
 export const getCurrentTrack = async (spotifyAccessToken: string): Promise<TrackData | null> => {
   try {
-    // Fetch the Spotify access token from your API route
+
+ 
 
     if (!spotifyAccessToken) {
       console.error("No access token available.");

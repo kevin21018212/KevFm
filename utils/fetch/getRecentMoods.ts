@@ -12,7 +12,7 @@ interface RecentlyPlayedItem {
 }
 
 export interface MoodData {
-  fifteenMinutes: string; // Added for 15-minute mood
+  fifteenMinutes: string;
   hour: string;
   day: string;
   week: string;
@@ -20,21 +20,22 @@ export interface MoodData {
 
 export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodData | null> => {
   try {
-    // Fetch the Spotify access token from your API route
-
     if (!spotifyAccessToken) {
       console.error("No access token available.");
       return null;
     }
 
     const now = new Date();
-    const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000); // 15 minutes ago
-    const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000); // 1 hour ago
-    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 1 day ago
-    const oneWeekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000); // 1 week ago
+
+    // Time frames adjusted for Spotify API limitations (last 24 hours)
+    const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
+    const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const oneWeekAgo = oneDayAgo; // Since Spotify's API only provides data for the last 24 hours
 
     const processTracksWithFeatures = async (since: Date): Promise<string> => {
       const tracks = await fetchRecentlyPlayedTracks(spotifyAccessToken, since);
+      console.log(`Tracks since ${since.toISOString()}: ${tracks.length}`);
 
       if (tracks.length === 0) {
         return "Neutral";
@@ -73,7 +74,7 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
       return determineMood(aggregatedFeatures);
     };
 
-    // Process moods for all time frames, including 15 minutes
+    // Process moods for all time frames
     const [moodFifteenMinutes, moodHour, moodDay, moodWeek] = await Promise.all([
       processTracksWithFeatures(fifteenMinutesAgo),
       processTracksWithFeatures(oneHourAgo),
@@ -82,13 +83,13 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
     ]);
 
     return {
-      fifteenMinutes: moodFifteenMinutes, // Include 15-minute mood
+      fifteenMinutes: moodFifteenMinutes,
       hour: moodHour,
       day: moodDay,
       week: moodWeek,
     };
-  } catch (error) {
-    console.error("Error fetching recent moods:", error);
+  } catch (error: any) {
+    console.error("Error fetching recent moods:", error.response ? error.response.data : error.message);
     return null;
   }
 };
@@ -103,14 +104,19 @@ const fetchRecentlyPlayedTracks = async (spotifyAccessToken: string, since: Date
 
     const items: RecentlyPlayedItem[] = response.data.items;
 
+    // Convert 'since' to UTC for accurate comparison
+    const sinceUTC = new Date(since.getTime() + since.getTimezoneOffset() * 60000);
+
     const filteredItems = items.filter((item) => {
-      const playedAt = new Date(item.played_at);
-      return playedAt >= since;
+      const playedAt = new Date(item.played_at); // This is in UTC
+      return playedAt.getTime() >= sinceUTC.getTime();
     });
 
+    console.log(`Filtered ${filteredItems.length} tracks since ${sinceUTC.toISOString()}`);
+
     return filteredItems;
-  } catch (error) {
-    console.error("Error fetching recently played tracks:", error);
+  } catch (error: any) {
+    console.error("Error fetching recently played tracks:", error.response ? error.response.data : error.message);
     return [];
   }
 };
@@ -120,28 +126,45 @@ const fetchAudioFeatures = async (
   trackIds: string[]
 ): Promise<{ [trackId: string]: AudioFeatures }> => {
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/audio-features?ids=${trackIds.join(",")}`, {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+    if (trackIds.length === 0) {
+      return {};
+    }
 
-    const audioFeaturesArray: any[] = response.data.audio_features;
+    // Split trackIds into chunks of 100 (API limit per request)
+    const chunkSize = 100;
+    const chunks = [];
+    for (let i = 0; i < trackIds.length; i += chunkSize) {
+      chunks.push(trackIds.slice(i, i + chunkSize));
+    }
+
     const audioFeaturesMap: { [trackId: string]: AudioFeatures } = {};
 
-    audioFeaturesArray.forEach((features) => {
-      if (features) {
-        audioFeaturesMap[features.id] = {
-          danceability: features.danceability,
-          energy: features.energy,
-          valence: features.valence,
-        };
-      }
-    });
+    for (const chunk of chunks) {
+      const response = await axios.get(`https://api.spotify.com/v1/audio-features`, {
+        headers: {
+          Authorization: `Bearer ${spotifyAccessToken}`,
+        },
+        params: {
+          ids: chunk.join(","),
+        },
+      });
+
+      const audioFeaturesArray: any[] = response.data.audio_features;
+
+      audioFeaturesArray.forEach((features) => {
+        if (features) {
+          audioFeaturesMap[features.id] = {
+            danceability: features.danceability,
+            energy: features.energy,
+            valence: features.valence,
+          };
+        }
+      });
+    }
 
     return audioFeaturesMap;
-  } catch (error) {
-    console.error("Error fetching audio features:", error);
+  } catch (error: any) {
+    console.error("Error fetching audio features:", error.response ? error.response.data : error.message);
     return {};
   }
 };
