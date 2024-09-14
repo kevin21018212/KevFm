@@ -36,19 +36,17 @@
     max-width: 50vw;
 
     /* Responsive Adjustments */
-    @media (max-width: 1100px) {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
     @media (max-width: 700px) {
       grid-template-columns: 1fr;
+      width: 70vw;
+      grid-auto-rows: 100px;
     }
   }
 
   /* Individual Card */
   .card {
     background-color: $secondaryColor;
-    padding: 1rem;
+
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 30px rgba(255, 255, 255, 0.2);
     display: flex;
@@ -120,6 +118,22 @@
     &:hover:after {
       opacity: 0.4;
       transform: rotate(45deg) scale(1.2);
+    }
+  }
+  @media (max-width: 700px) {
+    .card {
+      padding: 2rem; // Increase padding for better spacing
+
+      .cardContent {
+        /* Increase h3 and paragraph font sizes */
+        h3 {
+          font-size: 4.5vw; // Increased from 3.5vw
+        }
+
+        p {
+          font-size: 3.5vw; // Increased from 2.5vw
+        }
+      }
     }
   }
 
@@ -265,6 +279,42 @@
     .error,
     .noData {
       font-size: 4vw;
+    }
+  }
+  @media (max-width: 600px) {
+    padding: 1.5rem;
+
+    min-height: 60vh;
+
+    h2 {
+      font-size: 6.5vw;
+    }
+
+    .cardsContainer {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 100%;
+    }
+
+    .card {
+      padding: 1.5rem;
+
+      .cardContent {
+        h3 {
+          font-size: 5vw;
+          margin-bottom: 5%;
+        }
+
+        p {
+          font-size: 4vw;
+        }
+      }
+    }
+
+    .loading,
+    .error,
+    .noData {
+      font-size: 4.5vw; // Increase these as well for better readability
     }
   }
 }
