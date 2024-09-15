@@ -21,9 +21,6 @@ export const getRecentTracks = async (spotifyAccessToken: string): Promise<Track
       },
     });
 
-    // Log the API response
-    console.log("API Response for getRecentTracks:", response.data);
-
     // Extract track information from the response
     const tracks = response.data.items.map((item: any) => ({
       name: item.track.name,

@@ -30,10 +30,6 @@ export async function GET(request: NextRequest) {
 
     const { access_token, refresh_token } = response.data;
 
-    // Log the tokens for now; store refresh_token securely
-    console.log("Access Token:", access_token);
-    console.log("Refresh Token:", refresh_token);
-
     return new NextResponse("Tokens have been logged in the console. Update your .env.local file.");
   } catch (error: any) {
     console.error("Error obtaining tokens:", error.response?.data || error.message);

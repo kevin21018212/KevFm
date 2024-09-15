@@ -49,6 +49,7 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
         danceability: 0,
         energy: 0,
         valence: 0,
+        genres: [], // Add genres as an empty array initially
       };
 
       let count = 0;
@@ -59,6 +60,12 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
           aggregatedFeatures.danceability += features.danceability;
           aggregatedFeatures.energy += features.energy;
           aggregatedFeatures.valence += features.valence;
+
+          // Accumulate genres (avoid duplicates)
+          aggregatedFeatures.genres = Array.from(
+            new Set([...(aggregatedFeatures.genres || []), ...(features.genres || [])])
+          );
+
           count += 1;
         }
       });
@@ -126,45 +133,52 @@ const fetchAudioFeatures = async (
   trackIds: string[]
 ): Promise<{ [trackId: string]: AudioFeatures }> => {
   try {
-    if (trackIds.length === 0) {
-      return {};
-    }
+    const response = await axios.get(`https://api.spotify.com/v1/audio-features?ids=${trackIds.join(",")}`, {
+      headers: {
+        Authorization: `Bearer ${spotifyAccessToken}`,
+      },
+    });
 
-    // Split trackIds into chunks of 100 (API limit per request)
-    const chunkSize = 100;
-    const chunks = [];
-    for (let i = 0; i < trackIds.length; i += chunkSize) {
-      chunks.push(trackIds.slice(i, i + chunkSize));
-    }
-
+    const audioFeaturesArray: any[] = response.data.audio_features;
     const audioFeaturesMap: { [trackId: string]: AudioFeatures } = {};
 
-    for (const chunk of chunks) {
-      const response = await axios.get(`https://api.spotify.com/v1/audio-features`, {
-        headers: {
-          Authorization: `Bearer ${spotifyAccessToken}`,
-        },
-        params: {
-          ids: chunk.join(","),
-        },
-      });
-
-      const audioFeaturesArray: any[] = response.data.audio_features;
-
-      audioFeaturesArray.forEach((features) => {
-        if (features) {
-          audioFeaturesMap[features.id] = {
-            danceability: features.danceability,
-            energy: features.energy,
-            valence: features.valence,
-          };
-        }
-      });
+    for (const features of audioFeaturesArray) {
+      if (features) {
+        const trackGenres = await fetchGenres(spotifyAccessToken, features.id); // Fetch genres
+        audioFeaturesMap[features.id] = {
+          danceability: features.danceability,
+          energy: features.energy,
+          valence: features.valence,
+          genres: trackGenres, // Include genres
+        };
+      }
     }
 
     return audioFeaturesMap;
   } catch (error: any) {
     console.error("Error fetching audio features:", error.response ? error.response.data : error.message);
     return {};
+  }
+};
+
+const fetchGenres = async (spotifyAccessToken: string, trackId: string): Promise<string[]> => {
+  try {
+    const response = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
+      headers: {
+        Authorization: `Bearer ${spotifyAccessToken}`,
+      },
+    });
+
+    const artistId = response.data.artists[0].id; // Get artist ID from the track
+    const artistResponse = await axios.get(`https://api.spotify.com/v1/artists/${artistId}`, {
+      headers: {
+        Authorization: `Bearer ${spotifyAccessToken}`,
+      },
+    });
+
+    return artistResponse.data.genres; // Return genres for the artist
+  } catch (error: any) {
+    console.error("Error fetching genres:", error.response ? error.response.data : error.message);
+    return [];
   }
 };
