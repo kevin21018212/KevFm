@@ -17,6 +17,14 @@ const App: React.FC = () => {
       try {
         const tokenResponse = await axios.get("/api/getSpotifyToken");
         setSpotifyAccessToken(tokenResponse.data.accessToken);
+
+        // Refresh the token every 55 minutes (tokens expire in 60 minutes)
+        const refreshInterval = setInterval(async () => {
+          const tokenResponse = await axios.get("/api/getSpotifyToken");
+          setSpotifyAccessToken(tokenResponse.data.accessToken);
+        }, 55 * 60 * 1000);
+
+        return () => clearInterval(refreshInterval); // Clean up the interval on unmount
       } catch (err) {
         console.error("Error fetching Spotify token:", err);
         setError("Failed to fetch Spotify token.");
@@ -27,6 +35,11 @@ const App: React.FC = () => {
 
     fetchSpotifyToken();
   }, []);
+
+  if (!clientId || !clientSecret || !refreshToken) {
+    console.error("Missing Spotify environment variables");
+    return NextResponse.json({ error: "Missing CLIENT_ID, CLIENT_SECRET, or REFRESH_TOKEN." }, { status: 500 });
+  }
 
   if (error) {
     return <div className={styles.error}>Error: {error || "No access token available."}</div>;
