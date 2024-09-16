@@ -36,11 +36,6 @@ const App: React.FC = () => {
     fetchSpotifyToken();
   }, []);
 
-  if (!clientId || !clientSecret || !refreshToken) {
-    console.error("Missing Spotify environment variables");
-    return NextResponse.json({ error: "Missing CLIENT_ID, CLIENT_SECRET, or REFRESH_TOKEN." }, { status: 500 });
-  }
-
   if (error) {
     return <div className={styles.error}>Error: {error || "No access token available."}</div>;
   }
