@@ -87,26 +87,21 @@ export const determineMood = (features: AudioFeatures): string => {
     return "White Woman";
   }
 
-  // Default fallback
   return "Neutral";
 };
 export const moodColors: { [key: string]: string } = {
-  "Pumped Up": "#ff5722", // Deep Orange
-  Slutty: "#e91e63", // Pink
-  Blissful: "#4caf50", // Green
-  Vibin: "#9c27b0", // Purple
-  "Down Bad": "#3f51b5", // Indigo
-  "Fighting Demons": "#f44336", // Red
-  "Trappin'": "#ff9800", // Orange
-  Chilling: "#2196f3", // Blue
-  "In the Trenches": "#00bcd4", // Cyan
-  Sassy: "#cddc39", // Lime
-  Petty: "#795548", // Brown
-  "Dailed In": "#607d8b", // Blue Grey
+  "Pumped Up": "#ff4500", // Intense Orange
+  Slutty: "#ff69b4", // Pink
+  Blissful: "#32cd32", // Bright Green
+  "Vibin'": "#9370db", // Soft Purple
+  "Down Bad": "#4169e1", // Royal Blue
+  "Fighting Demons": "#d32f2f", // Dark Red
+  "Trappin'": "#ff8c00", // Dark Orange
+  Chilling: "#4682b4", // Steel Blue
+  "In The Trenches": "#00ced1", // Dark Turquoise
+  Sassy: "#ffeb3b", // Yellow
+  Petty: "#8b4513", // Saddle Brown
+  "Dailed In": "#708090", // Slate Grey
   "White Woman": "#ffffff", // White
   Neutral: "#9e9e9e", // Grey
-  Hyped: "#ff4500", // Orange-Red
-  Chillwave: "#40e0d0", // Turquoise
-  Melancholic: "#8b0000", // Dark Red
-  Groovin: "#ff69b4", // Hot Pink
 };
