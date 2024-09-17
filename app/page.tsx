@@ -24,7 +24,6 @@ const App: React.FC = () => {
       }
     };
 
-    // Fetch the token when the component mounts (i.e., user logs in)
     fetchSpotifyToken();
   }, []);
 
