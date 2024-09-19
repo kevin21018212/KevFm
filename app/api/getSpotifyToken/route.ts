@@ -33,7 +33,7 @@ export async function GET() {
       { accessToken, expiresIn },
       {
         headers: {
-          "Cache-Control": "no-store, max-age=0",
+          "Cache-Control": "no-store, max-age=0, must-revalidate",
         },
       }
     );

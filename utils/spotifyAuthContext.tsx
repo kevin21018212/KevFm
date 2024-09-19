@@ -1,21 +1,30 @@
-// components/App.tsx
+// context/SpotifyAuthContext.tsx
 
-"use client";
-
-import React, { useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import styles from "./page.module.css";
-import Body from "@/components/body";
-import MoodDisplay from "@/components/mood";
-import { Head } from "@/components/head";
 
-const App: React.FC = () => {
-  const [spotifyAccessToken, setSpotifyAccessToken] = useState<string | null>(null);
+interface SpotifyAuthContextProps {
+  accessToken: string | null;
+  loading: boolean;
+  error: string | null;
+  setAccessToken: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const SpotifyAuthContext = createContext<SpotifyAuthContextProps>({
+  accessToken: null,
+  loading: true,
+  error: null,
+  setAccessToken: () => {},
+});
+
+export const useSpotifyAuth = () => useContext(SpotifyAuthContext);
+
+export const SpotifyAuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [accessToken, setAccessToken] = useState<string | null>(null);
   const [tokenExpiryTime, setTokenExpiryTime] = useState<number | null>(null); // Unix timestamp in ms
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch the Spotify token
   const fetchSpotifyToken = useCallback(async () => {
     console.log("Fetching Spotify token...");
     setLoading(true);
@@ -27,7 +36,7 @@ const App: React.FC = () => {
         throw new Error("Invalid token response from Spotify.");
       }
 
-      setSpotifyAccessToken(accessToken);
+      setAccessToken(accessToken);
       const expiryTime = Date.now() + expiresIn * 1000;
       setTokenExpiryTime(expiryTime);
       setError(null);
@@ -54,7 +63,6 @@ const App: React.FC = () => {
 
     console.log(`Setting up token refresh in ${refreshTime / 1000} seconds.`);
 
-    // If refreshTime is negative, token is about to expire or already expired
     if (refreshTime <= 0) {
       console.log("Token is about to expire or has expired. Fetching a new token now.");
       fetchSpotifyToken();
@@ -64,7 +72,6 @@ const App: React.FC = () => {
         fetchSpotifyToken();
       }, refreshTime);
 
-      // Cleanup the timer on unmount or when expiryTime changes
       return () => {
         console.log("Clearing existing token refresh timer.");
         clearTimeout(timer);
@@ -72,26 +79,9 @@ const App: React.FC = () => {
     }
   }, [tokenExpiryTime, fetchSpotifyToken]);
 
-  if (error) {
-    return <div className={styles.error}>Error: {error}</div>;
-  }
-
-  if (loading && !spotifyAccessToken) {
-    // Optionally, display a loader or placeholder
-    return <div className={styles.loading}>Loading...</div>;
-  }
-
   return (
-    <div className={styles.app}>
-      <div className={styles.head}>
-        <Head spotifyAccessToken={spotifyAccessToken} />
-      </div>
-      <MoodDisplay spotifyAccessToken={spotifyAccessToken} />
-      <div className={styles.body}>
-        <Body spotifyAccessToken={spotifyAccessToken || ""} />
-      </div>
-    </div>
+    <SpotifyAuthContext.Provider value={{ accessToken, loading, error, setAccessToken }}>
+      {children}
+    </SpotifyAuthContext.Provider>
   );
 };
-
-export default App;
