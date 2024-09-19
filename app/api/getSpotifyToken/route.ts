@@ -1,3 +1,5 @@
+// pages/api/getSpotifyToken.ts
+
 import { NextResponse } from "next/server";
 import axios from "axios";
 
@@ -25,10 +27,18 @@ export async function GET() {
     });
 
     const accessToken = tokenResponse.data.access_token;
+    const expiresIn = tokenResponse.data.expires_in; // Typically 3600 seconds
 
-    return NextResponse.json({ accessToken });
-  } catch (error) {
-    console.error("Error fetching Spotify access token:", (error as any).response?.data || (error as any).message);
+    return NextResponse.json(
+      { accessToken, expiresIn },
+      {
+        headers: {
+          "Cache-Control": "no-store, max-age=0",
+        },
+      }
+    );
+  } catch (error: any) {
+    console.error("Error fetching Spotify access token:", error.response?.data || error.message);
     return NextResponse.json({ error: "Error fetching Spotify access token." }, { status: 500 });
   }
 }
