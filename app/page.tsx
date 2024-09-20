@@ -1,5 +1,3 @@
-// components/App.tsx
-
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -50,7 +48,7 @@ const App: React.FC = () => {
     if (!tokenExpiryTime) return;
 
     const currentTime = Date.now();
-    const refreshTime = tokenExpiryTime - currentTime - 5 * 60 * 1000; // 5 minutes before expiry
+    const refreshTime = tokenExpiryTime - currentTime - 60 * 1000; // 1 minute before expiry
 
     console.log(`Setting up token refresh in ${refreshTime / 1000} seconds.`);
 
@@ -73,12 +71,12 @@ const App: React.FC = () => {
   }, [tokenExpiryTime, fetchSpotifyToken]);
 
   if (error) {
-    return <div className={styles.error}>Error: {error}</div>;
+    return <div className={styles.app}></div>;
   }
 
   if (loading && !spotifyAccessToken) {
-    // Optionally, display a loader or placeholder
-    return <div className={styles.loading}>Loading...</div>;
+
+    return <div className={styles.app}><div>;
   }
 
   return (
