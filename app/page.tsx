@@ -75,8 +75,7 @@ const App: React.FC = () => {
   }
 
   if (loading && !spotifyAccessToken) {
-
-    return <div className={styles.app}><div>;
+    return <div className={styles.app}></div>;
   }
 
   return (
