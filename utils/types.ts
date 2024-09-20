@@ -1,3 +1,4 @@
+import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
 export interface User {
   id: string;
   name: string;
@@ -29,4 +30,27 @@ export interface TrackData {
   albumArtSrc: string;
   bgColor: string;
   bgColor2: string;
+}
+
+declare module "next-auth" {
+  interface Session {
+    user: {
+      accessToken?: string;
+      refreshToken?: string;
+      expiresAt?: number;
+    } & DefaultSession["user"];
+  }
+
+  interface User extends DefaultUser {
+    accessToken?: string;
+    refreshToken?: string;
+    expiresAt?: number;
+  }
+
+  interface JWT {
+    accessToken?: string;
+    refreshToken?: string;
+    expiresAt?: number;
+    error?: string;
+  }
 }

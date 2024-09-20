@@ -1,3 +1,4 @@
+// app/page.tsx or app/App.tsx (depending on your project structure)
 "use client";
 
 import React, { useEffect, useState, useCallback } from "react";
@@ -5,20 +6,31 @@ import axios from "axios";
 import styles from "./page.module.css";
 import Body from "@/components/body";
 import MoodDisplay from "@/components/mood";
+import { signOut, useSession } from "next-auth/react";
 import { Head } from "@/components/head";
+import SignIn from "@/components/signIn";
 
 const App: React.FC = () => {
+  const { data: session, status } = useSession();
   const [spotifyAccessToken, setSpotifyAccessToken] = useState<string | null>(null);
   const [tokenExpiryTime, setTokenExpiryTime] = useState<number | null>(null); // Unix timestamp in ms
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Function to fetch the Spotify token
+  // Function to fetch a new access token using the refresh token
   const fetchSpotifyToken = useCallback(async () => {
+    if (!session?.user?.refreshToken) {
+      setError("No refresh token available.");
+      return;
+    }
+
     console.log("Fetching Spotify token...");
     setLoading(true);
     try {
-      const tokenResponse = await axios.get("/api/getSpotifyToken");
+      const tokenResponse = await axios.post("/api/refreshToken", {
+        refreshToken: session.user.refreshToken,
+      });
+
       const { accessToken, expiresIn } = tokenResponse.data;
 
       if (!accessToken || !expiresIn) {
@@ -36,12 +48,18 @@ const App: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [session]);
 
-  // Initial token fetch on component mount
+  // Initial token fetch when session is available
   useEffect(() => {
-    fetchSpotifyToken();
-  }, [fetchSpotifyToken]);
+    if (session?.user?.accessToken) {
+      setSpotifyAccessToken(session.user.accessToken);
+      setTokenExpiryTime(session.user.expiresAt!);
+      setLoading(false);
+    } else if (status !== "loading") {
+      setLoading(false);
+    }
+  }, [session, status]);
 
   // Setup a timer to refresh the token before it expires
   useEffect(() => {
@@ -70,23 +88,19 @@ const App: React.FC = () => {
     }
   }, [tokenExpiryTime, fetchSpotifyToken]);
 
-  if (error) {
-    return <div className={styles.app}></div>;
-  }
-
-  if (loading && !spotifyAccessToken) {
-    return <div className={styles.app}></div>;
+  if (status === "loading" || loading) {
+    return <div className={styles.app}>Loading...</div>;
   }
 
   return (
     <div className={styles.app}>
-      <div className={styles.head}>
+      <header className={styles.header}>
         <Head spotifyAccessToken={spotifyAccessToken} />
-      </div>
-      <MoodDisplay spotifyAccessToken={spotifyAccessToken} />
-      <div className={styles.body}>
+      </header>
+      <main className={styles.mainContent}>
+        <MoodDisplay spotifyAccessToken={spotifyAccessToken} />
         <Body spotifyAccessToken={spotifyAccessToken || ""} />
-      </div>
+      </main>
     </div>
   );
 };

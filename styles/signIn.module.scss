@@ -1,0 +1,39 @@
+@import "/app/common.module.scss";
+.signInContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: $containerBackground;
+  padding: 2rem;
+}
+
+.title {
+  color: $textPrimary;
+  font-size: 10rem;
+  margin-bottom: 2rem;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.signInButton {
+  background-color: $primaryColor;
+  color: #fff;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 50px;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: $buttonShadow;
+  &:hover {
+    background-color: $primary-hover-color;
+    transform: scale(1.05);
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+}
