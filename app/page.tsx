@@ -91,6 +91,9 @@ const App: React.FC = () => {
   if (status === "loading" || loading) {
     return <div className={styles.app}>Loading...</div>;
   }
+  if (!session) {
+    return <SignIn />;
+  }
 
   return (
     <div className={styles.app}>
