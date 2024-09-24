@@ -122,22 +122,6 @@
       padding: 2vh; // Adjust padding for better spacing
       overflow: hidden;
     }
-    &:hover {
-      transform: none;
-    }
-
-    &:hover:after {
-      transform: none; // Reduced scale on hover to avoid overflow
-    }
-    &:before {
-      transition: none;
-      transform: none;
-    }
-
-    &:after {
-      transition: none;
-      transform: none;
-    }
   }
 
   /* Grid Span Variants */
