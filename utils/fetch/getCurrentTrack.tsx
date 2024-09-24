@@ -1,5 +1,16 @@
-import axios from "axios";
+// utils/getCurrentTrack.ts
+
+const albumArt = require("album-art");
 import { average } from "color.js";
+import { getServerSideProps } from "../getSSR";
+
+interface Track {
+  name: string;
+  artist: {
+    "#text": string;
+  };
+  image: { "#text": string }[];
+}
 
 interface TrackData {
   name: string;
@@ -10,90 +21,30 @@ interface TrackData {
   bgColor2: string;
 }
 
-// Helper function to get the most recently played track
-const getRecentlyPlayedTrack = async (spotifyAccessToken: string): Promise<TrackData | null> => {
+export const getCurrentTrack = async (): Promise<TrackData | null> => {
   try {
-    const response = await axios.get("https://api.spotify.com/v1/me/player/recently-played?limit=1", {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+    const { userName, apiKey }: any = (await getServerSideProps()).props;
 
-    const data = response.data;
+    const url = `https://ws.audioscrobbler.com/2.0/?method=user.getRecentTracks&user=${userName}&api_key=${apiKey}&limit=1&nowplaying=true&format=json`;
+    const response = await fetch(url);
+    const data = await response.json();
+    const track: Track = data.recenttracks.track[0];
 
-    if (!data || !data.items || data.items.length === 0) {
-      console.log("No recently played tracks available.");
-      return null;
-    }
-
-    const track = data.items[0].track;
-    const artistName = track.artists[0].name;
-    const trackName = track.name;
-    const albumArtSrc = track.album.images[0].url;
-    const imageSrc = track.album.images[1]?.url || albumArtSrc;
-
+    const imageSrc = track.image[3]["#text"];
+    const albumArtSrc = await albumArt(track.artist["#text"]);
     const bgColor = (await average(albumArtSrc, { format: "hex" })).toString();
     const bgColor2 = (await average(imageSrc, { format: "hex" })).toString();
 
     return {
-      name: trackName,
-      artist: artistName,
+      name: track.name,
+      artist: track.artist["#text"],
       imageSrc,
       albumArtSrc,
       bgColor,
       bgColor2,
     };
   } catch (error) {
-    console.error("Error fetching recently played track:", error);
-    return null;
-  }
-};
-
-export const getCurrentTrack = async (spotifyAccessToken: string): Promise<TrackData | null> => {
-  try {
-
- 
-
-    if (!spotifyAccessToken) {
-      console.error("No access token available.");
-      return null;
-    }
-
-    // Fetch currently playing track from Spotify API
-    const response = await axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
-
-    const data = response.data;
-
-    // If there's no currently playing track, fetch the most recently played track
-    if (!data || !data.item) {
-      console.log("No track is currently playing. Fetching the most recently played track...");
-      return await getRecentlyPlayedTrack(spotifyAccessToken);
-    }
-
-    const track = data.item;
-    const artistName = track.artists[0].name;
-    const trackName = track.name;
-    const albumArtSrc = track.album.images[0].url;
-    const imageSrc = track.album.images[1]?.url || albumArtSrc;
-
-    // Calculate average colors from album art and image
-    const bgColor = (await average(albumArtSrc, { format: "hex" })).toString();
-    const bgColor2 = (await average(imageSrc, { format: "hex" })).toString();
-
-    return {
-      name: trackName,
-      artist: artistName,
-      imageSrc,
-      albumArtSrc,
-      bgColor,
-      bgColor2,
-    };
-  } catch (error) {
-    console.error("Error fetching current track data:", error);
+    console.error("Error fetching track data:", error);
     return null;
   }
 };

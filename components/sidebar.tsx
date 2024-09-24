@@ -9,7 +9,6 @@ import { containerVariants, linkVariants, imageVariants, bounceVariants } from "
 import { User, Track } from "@/utils/types";
 
 interface SidebarProps {
-  spotifyAccessToken: string;
   userInfo: User | null;
   recentTracks: Track[] | null;
 }
@@ -38,12 +37,12 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo, recentTracks }) => {
           className={styles.profileImage} // Ensure you have this class in your SCSS
         />
         <p>
-          <a href={userInfo.profileURL} target="_blank" rel="noopener noreferrer">
-            {userInfo.name} ({userInfo.displayName})
+          <a href={userInfo.url} target="_blank" rel="noopener noreferrer">
+            {userInfo.name} ({userInfo.name})
           </a>
         </p>
         <p>Country: {userInfo.country}</p>
-        <p>Followers: {userInfo.followers}</p>
+        <p>PlayCount: {userInfo.playcount}</p>
       </motion.div>
 
       {/* Recent Tracks Section */}

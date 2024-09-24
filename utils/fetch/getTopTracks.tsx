@@ -1,45 +1,57 @@
 import axios from "axios";
+import { getServerSideProps } from "../getSSR";
 import { Track } from "../types";
-
-export const getTopTracks = async (spotifyAccessToken: string): Promise<Track[] | null> => {
+const albumArt = require("album-art");
+export const getTopTracks = async (): Promise<Track[] | null> => {
   try {
-    if (!spotifyAccessToken) {
-      console.error("No access token available.");
+    // Retrieve userName and apiKey from server-side props
+    const { userName, apiKey }: any = (await getServerSideProps()).props;
+
+    if (!apiKey || !userName) {
+      console.error("Missing Last.fm API key or username in environment variables.");
       return null;
     }
 
-    // Fetch top tracks from Spotify API
-    const response = await axios.get("https://api.spotify.com/v1/me/top/tracks?limit=3&time_range=short_term", {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+    const url = `https://ws.audioscrobbler.com/2.0/`;
+    const params = {
+      method: "user.gettoptracks",
+      user: userName,
+      api_key: apiKey,
+      format: "json",
+      period: "7day", // Set the period to 7 days (1 week)
+      limit: 3, // Fetch the top 3 tracks
+    };
 
-    if (response.status !== 200 || !response.data.items) {
-      console.error("Invalid response from Spotify API", response);
+    const response = await axios.get(url, { params });
+    const data = response.data;
+
+    // Log the API response for debugging
+    console.log("API Response for getTopTracks:", data);
+
+    if (!data.toptracks || !data.toptracks.track) {
+      console.log("No top tracks found.");
       return null;
     }
 
-    // Extract the top 3 track information
-    const tracks: Track[] = response.data.items
-      .map((track: any) => {
-        if (!track.name || !track.artists || !track.album) {
-          console.error("Missing track information", track);
-          return null;
-        }
+    const tracks: Track[] = await Promise.all(
+      data.toptracks.track.map(async (track: any) => {
+        // Fetch the image URL using the albumArt helper
+        const imageURL = await albumArt(track.artist.name, { size: "large" });
 
         return {
           name: track.name,
-          artist: { name: track.artists[0].name },
-          imageURL: track.album.images[0].url,
-          url: track.external_urls.spotify, // Spotify track URL
-          nowPlaying: false,
+          playcount: parseInt(track.playcount, 10) || 0,
+          imageURL,
+          url: track.url, // Last.fm URL for the track
+          artistName: track.artist.name,
         };
       })
-      .filter((track: Track | null) => track !== null);
-    return tracks.length > 0 ? tracks : null;
-  } catch (error) {
-    console.error("Error fetching top tracks:", error);
+    );
+
+    return tracks;
+  } catch (error: any) {
+    console.error("Unexpected error:", error);
+
     return null;
   }
 };

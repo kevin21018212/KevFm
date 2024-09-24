@@ -1,13 +1,19 @@
-import NextAuth, { DefaultSession, DefaultUser } from "next-auth";
+import { DefaultSession, DefaultUser } from "next-auth";
 export interface User {
   id: string;
   name: string;
-  displayName: string;
-  profileURL: string;
+  realname: string;
+  url: string;
   image: string;
-  followers: number;
-  country: string | null;
+  country: string;
+  age: number;
+  gender: string;
+  subscriber: boolean;
+  playcount: number;
+  playlists: number;
+  registered: string;
 }
+
 export interface Artist {
   name: string;
   playcount: number;
@@ -32,25 +38,51 @@ export interface TrackData {
   bgColor2: string;
 }
 
-declare module "next-auth" {
-  interface Session {
-    user: {
-      accessToken?: string;
-      refreshToken?: string;
-      expiresAt?: number;
-    } & DefaultSession["user"];
-  }
+export interface TrackTag {
+  name: string;
+  count: number;
+  url: string;
+}
 
-  interface User extends DefaultUser {
-    accessToken?: string;
-    refreshToken?: string;
-    expiresAt?: number;
-  }
+export interface TrackInfo {
+  name: string;
+  artist: string;
+  date?: number;
+  tags: TrackTag[];
+}
 
-  interface JWT {
-    accessToken?: string;
-    refreshToken?: string;
-    expiresAt?: number;
-    error?: string;
-  }
+export interface UserTopTracksResponse {
+  toptracks: {
+    track: Array<{
+      name: string;
+      artist: { name: string };
+      playcount: string;
+      url: string;
+    }>;
+  };
+}
+
+export interface UserRecentTracksResponse {
+  recenttracks: {
+    track: Array<{
+      name: string;
+      artist: { "#text": string; name: string };
+      url: string;
+      date?: { uts: string; "#text": string };
+      "@attr"?: { nowplaying: string };
+    }>;
+  };
+}
+
+export interface TrackTopTagsResponse {
+  toptags: {
+    tag: TrackTag[];
+  };
+}
+
+export interface MoodData {
+  current: string;
+  day: string;
+  week: string;
+  month: string;
 }

@@ -1,47 +1,68 @@
+// services/lastfm.ts
+
 import axios from "axios";
 import { Track } from "../types";
+import { getUserInfo } from "./getUserInfo";
+import { getServerSideProps } from "../getSSR";
 
-// Fetch recent tracks using the Spotify API
-export const getRecentTracks = async (spotifyAccessToken: string): Promise<Track[] | null> => {
+/**
+ * Fetches a list of recent tracks listened to by the user.
+ */
+export const getRecentTracks = async (limit: number = 7): Promise<Track[] | null> => {
   try {
-    if (!spotifyAccessToken) {
-      console.error("No access token available.");
+    const userInfo = await getUserInfo();
+    if (!userInfo) {
+      console.error("Failed to retrieve user info.");
       return null;
     }
 
-    // Spotify API endpoint to get the user's recently played tracks
-    const url = "https://api.spotify.com/v1/me/player/recently-played?limit=7";
+    const { userName, apiKey }: any = (await getServerSideProps()).props;
+    if (!apiKey || !userName) {
+      console.error("Missing Last.fm API key or username in environment variables.");
+      return null;
+    }
 
-    // Fetch recent tracks from Spotify API
-    const response = await axios.get(url, {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+    const url = `https://ws.audioscrobbler.com/2.0/`;
+    const params = {
+      method: "user.getrecenttracks",
+      user: userName,
+      api_key: apiKey,
+      format: "json",
+      limit,
+    };
 
-    // Extract track information from the response
-    const tracks = response.data.items.map((item: any) => {
-      // Parse the played_at timestamp into a Date object
-      const playedAtDate = new Date(item.played_at);
+    const response = await axios.get(url, { params });
+    const tracks = response.data.recenttracks?.track;
 
-      // Format the date as needed
-      const formattedPlayedAt = playedAtDate.toLocaleString("en-US", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      });
+    if (!tracks || tracks.length === 0) {
+      console.log("No recently played tracks available.");
+      return null;
+    }
+
+    // Map Last.fm tracks to your Track interface
+    const formattedTracks: Track[] = tracks.map((track: any) => {
+      const isNowPlaying = track["@attr"]?.nowplaying === "true";
+      const artistName = track.artist["#text"] || "Unknown Artist";
+      const trackName = track.name || "Unknown Track";
+      const trackUrl = track.url || "";
+      const playedAt = track.date ? track.date["#text"] : undefined;
 
       return {
-        name: item.track.name,
-        artist: item.track.artists[0].name,
-        url: item.track.external_urls.spotify,
-        nowplaying: false,
-        playedAt: formattedPlayedAt,
+        name: trackName,
+        artist: artistName,
+        url: trackUrl,
+        nowplaying: isNowPlaying,
+        playedAt: isNowPlaying ? undefined : playedAt, // Currently playing track may not have 'playedAt'
       };
     });
 
-    return tracks;
-  } catch (error) {
-    console.error("Error fetching recent tracks:", error);
+    return formattedTracks;
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error fetching recent tracks from Last.fm:", error.response?.data || error.message);
+    } else {
+      console.error("Unexpected error:", error);
+    }
     return null;
   }
 };

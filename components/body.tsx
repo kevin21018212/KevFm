@@ -13,11 +13,7 @@ import { getTopTracks } from "@/utils/fetch/getTopTracks";
 import { getUserInfo } from "@/utils/fetch/getUserInfo";
 import { getRecentTracks } from "@/utils/fetch/getRecentTracks";
 
-interface BodyProps {
-  spotifyAccessToken: any;
-}
-
-const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: BodyProps) => {
+const Body = () => {
   const [topArtist, setTopArtist] = useState<Artist | null>(null);
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -25,18 +21,13 @@ const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: BodyProps) => {
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
-    if (!spotifyAccessToken) {
-      setError("No Spotify access token provided.");
-      return;
-    }
-
     const fetchData = async () => {
       try {
         const [artist, tracks, user, recent] = await Promise.all([
-          getTopArtist(spotifyAccessToken),
-          getTopTracks(spotifyAccessToken),
-          getUserInfo(spotifyAccessToken),
-          getRecentTracks(spotifyAccessToken),
+          getTopArtist(),
+          getTopTracks(),
+          getUserInfo(),
+          getRecentTracks(),
         ]);
 
         if (artist) setTopArtist(artist);
@@ -55,7 +46,7 @@ const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: BodyProps) => {
     };
 
     fetchData();
-  }, [spotifyAccessToken]);
+  }, []);
 
   // Handle error state
   if (error) return <p>{error}</p>;
@@ -65,7 +56,7 @@ const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: BodyProps) => {
     return (
       <motion.div className={styles.body} variants={containerVariants} initial="hidden" animate="visible">
         <div className={styles.sidebar}>
-          <Sidebar spotifyAccessToken={spotifyAccessToken} userInfo={null} recentTracks={null} />
+          <Sidebar userInfo={null} recentTracks={null} />
         </div>
         <motion.div className={styles.bodyMain}></motion.div>
       </motion.div>
@@ -74,7 +65,7 @@ const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: BodyProps) => {
   return (
     <motion.div className={styles.body} variants={containerVariants} initial="hidden" animate="visible">
       <div className={styles.sidebar}>
-        <Sidebar spotifyAccessToken={spotifyAccessToken} userInfo={userInfo} recentTracks={recentTracks} />
+        <Sidebar userInfo={userInfo} recentTracks={recentTracks} />
       </div>
 
       <motion.div className={styles.bodyMain}>

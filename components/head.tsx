@@ -5,13 +5,13 @@ import { containerVariants, textVariants, h1Variants, bounceVariants, slideDownV
 import { getCurrentTrack } from "@/utils/fetch/getCurrentTrack";
 import { TrackData } from "@/utils/types";
 
-export const Head = ({ spotifyAccessToken }: any) => {
+export const Head = () => {
   const [trackData, setTrackData] = useState<TrackData | null>(null);
   const [error, setError] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
-      const data = await getCurrentTrack(spotifyAccessToken);
+      const data = await getCurrentTrack();
       if (data) {
         setTrackData(data);
         document.documentElement.style.setProperty("--bg", data.bgColor);
@@ -22,7 +22,7 @@ export const Head = ({ spotifyAccessToken }: any) => {
     };
 
     fetchData();
-  }, [spotifyAccessToken]);
+  }, []);
 
   if (error) return <p>{error}</p>;
   if (!trackData)

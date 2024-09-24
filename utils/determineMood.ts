@@ -1,109 +1,84 @@
-export interface AudioFeatures {
-  danceability: number;
-  energy: number;
-  valence: number;
-  genres: string[];
-}
-
-export const determineMood = (features: AudioFeatures): string => {
-  const { valence, danceability, energy, genres } = features;
-
-  const isHipHop = genres.some(
-    (genre) => genre.toLowerCase().includes("hip hop") || genre.toLowerCase().includes("rap")
-  );
-  const isPop = genres.some((genre) => genre.toLowerCase().includes("pop"));
-  const isRock = genres.some((genre) => genre.toLowerCase().includes("rock"));
-  const isElectronic = genres.some(
-    (genre) => genre.toLowerCase().includes("electronic") || genre.toLowerCase().includes("edm")
-  );
-
-  // Pumped Up
-  if (valence > 0.6 && danceability > 0.6 && energy > 0.6) {
-    return isHipHop ? "Hyped" : "Pumped Up";
-  }
-
-  // Chillwave (for electronic, relaxing genres)
-  if (valence > 0.5 && danceability > 0.5 && energy < 0.5 && isElectronic) {
-    return "Chillwave";
-  }
-
-  // Melancholic (low valence, high danceability, and low energy)
-  if (valence < 0.4 && danceability > 0.6 && energy < 0.5) {
-    return "Melancholic";
-  }
-
-  // Groovin'
-  if (valence > 0.5 && danceability > 0.7 && energy > 0.5 && isPop) {
-    return "Groovin'";
-  }
-
-  // Blissful
-  if (valence > 0.5 && danceability < 0.5 && energy < 0.5) {
-    return "Blissful";
-  }
-
-  // Vibin'
-  if (valence > 0.4 && valence <= 0.7 && danceability > 0.4 && danceability <= 0.7 && energy > 0.4 && energy <= 0.7) {
-    return isRock ? "Chilling" : "Vibin'";
-  }
-
-  // Down Bad
-  if (valence < 0.4 && danceability < 0.4 && energy < 0.4) {
-    return "Down Bad";
-  }
-
-  // Fighting Demons
-  if (valence < 0.4 && danceability > 0.6 && energy > 0.6) {
-    return "Fighting Demons";
-  }
-
-  // Trappin'
-  if (valence > 0.3 && valence <= 0.7 && danceability > 0.5 && energy > 0.5) {
-    return "Trappin'";
-  }
-
-  // Chilling
-  if (valence > 0.3 && valence <= 0.7 && danceability < 0.5 && energy < 0.5) {
-    return "Chilling";
-  }
-
-  // Sassy
-  if (valence > 0.5 && valence <= 0.8 && danceability > 0.4 && danceability <= 0.7 && energy > 0.3 && energy <= 0.7) {
-    return "Sassy";
-  }
-
-  // Petty
-  if (valence < 0.4 && danceability > 0.6 && energy > 0.4 && energy <= 0.7) {
-    return "Petty";
-  }
-
-  // Dailed In
-  if (valence > 0.4 && valence <= 0.7 && danceability > 0.5 && energy > 0.3 && energy <= 0.7) {
-    return "Dailed In";
-  }
-
-  // White Woman
-  if (valence > 0.5 && valence <= 0.8 && danceability > 0.4 && danceability <= 0.7 && energy > 0.3 && energy <= 0.7) {
-    return "White Woman";
-  }
-
-  return "Neutral";
-};
 export const moodColors: { [key: string]: string } = {
-  Hyped: "#e8f89f",
-  "Pumped Up": "#90c693",
-  Chillwave: "#78a679",
-  Melancholic: "#09009f",
-  "Groovin'": "#e8f89f",
-  Blissful: "#90c693",
-  "Vibin'": "#78a679",
-  "Down Bad": "#15706c",
-  "Fighting Demons": "#105955",
-  "Trappin'": "#e8f89f",
-  Chilling: "#78a679",
-  Sassy: "#e8f89f",
-  Petty: "#e8f89f",
-  "Dailed In": "#15706c",
-  "White Woman": "#ffffff",
-  Neutral: "#9e9e9e", // Grey
+  Hyped: "#FF5733", // Bright Red-Orange
+  Clubbin: "#FFD700", // Gold
+  Chillwave: "#48C9B0", // Teal
+  Melancholic: "#34495E", // Dark Blue-Grey
+  "Groovin'": "#FF33FF", // Hot Pink
+  Blissful: "#F4D03F", // Soft Yellow
+  "Vibin'": "#7DCEA0", // Light Green
+  "Down Bad": "#2E4053", // Dark Slate
+  "Fighting Demons": "#C0392B", // Deep Red
+  "Trappin'": "#9B59B6", // Purple
+  Chilling: "#3498DB", // Sky Blue
+  Sassy: "#F39C12", // Bright Orange
+  Petty: "#E74C3C", // Crimson
+  "Dailed In": "#1ABC9C", // Bright Turquoise
+  "White Woman": "#F7F9F9", // Off-white
+  Neutral: "#BDC3C7", // Light Grey
+};
+
+const moodKeywords: { [mood: string]: string[] } = {
+  Hyped: ["hype", "party", "rap trap", "bad bitch anthem", "kanye west"],
+  Clubbin: ["pop", "dance", "electronic", "trap", "party", "dance electronic", "electropop"],
+  Chillwave: ["dream pop", "psychedelic soul", "cloud rap", "vaportrap", "neo-soul", "synthpop"],
+  Melancholic: [
+    "melancholic",
+    "jazz rap",
+    "conscious hip hop",
+    "abstract hip hop",
+    "smooth",
+    "detroit",
+    "alternative hip hop",
+  ],
+  "Groovin'": ["funk", "g-funk", "soul", "house", "dance", "electronic", "alternative rnb"],
+  Blissful: ["neo-soul", "rnb soul", "rythem and blues", "new jazz", "smooth soul", "in love", "art pop"],
+  "Vibin'": ["chill", "ambient", "cloud rap", "experimental hip hop", "neo-soul", "kenyan"],
+  "Down Bad": ["southern hip hop", "gangsta rap", "melancholic", "west coast hip hop", "underground hip hop"],
+  "Fighting Demons": ["rap", "trap", "hip-hop", "rap trap", "aggressive", "gangsta rap"],
+  "Trappin'": ["trap", "hip house", "rap", "southern hip hop", "detroit", "psychedelic", "hip hop"],
+  Chilling: ["chill", "neo-soul", "jazz rap", "indie", "synthpop", "cloud rap", "vaportrap"],
+  Sassy: ["sassy", "confident", "bold", "cheerful", "bad bitch anthem", "kenyan"],
+  Petty: ["petty", "jealous", "resentful", "angry", "experimental hip hop", "abstract hip hop"],
+  "Dailed In": ["rnb", "rap", "neutral", "various", "alternative hip hop", "cloud rap"],
+  Neutral: ["neutral", "background", "instrumental", "ambient", "neo-soul", "alternative rnb"],
+};
+
+// Tags that are too broad should not count for much unless combined with others
+const largeGenres = ["rap", "hip hop", "trap", "pop", "rnb", "hip-hop", "hiphop"];
+
+/**
+ * Determines the mood based on aggregated tag counts.
+ * @param tagCounts - An object mapping tag names to their counts.
+ * @returns The determined mood as a string.
+ */
+export const determineMood = (tagCounts: { [tag: string]: number }): string => {
+  const moodScores: { [mood: string]: number } = {};
+
+  Object.keys(moodKeywords).forEach((mood) => {
+    moodScores[mood] = 0;
+
+    moodKeywords[mood].forEach((keyword) => {
+      // If the tag is from largeGenres, only count if it's combined with smaller tags
+      if (tagCounts[keyword]) {
+        if (largeGenres.includes(keyword)) {
+          moodScores[mood] += tagCounts[keyword] * 0.1; // Reduce weight of large genres
+        } else {
+          moodScores[mood] += tagCounts[keyword]; // Full weight for niche tags
+        }
+      }
+    });
+  });
+
+  // Determine the mood with the highest score
+  let determinedMood = "Neutral";
+  let maxScore = 0;
+
+  Object.entries(moodScores).forEach(([mood, score]) => {
+    if (score > maxScore) {
+      maxScore = score;
+      determinedMood = mood;
+    }
+  });
+
+  return determinedMood;
 };

@@ -1,33 +1,51 @@
+// services/lastfm.ts
 import axios from "axios";
 import { User } from "../types";
+import { getServerSideProps } from "../getSSR";
 
-export const getUserInfo = async (spotifyAccessToken: string): Promise<User | null> => {
+export const getUserInfo = async (): Promise<User | null> => {
   try {
-    if (!spotifyAccessToken) {
-      console.error("No access token available.");
+    const { userName, apiKey }: any = (await getServerSideProps()).props;
+    if (!apiKey || !userName) {
+      console.error("Missing Last.fm API key or username in environment variables.");
       return null;
     }
 
-    // Fetch the user's information from Spotify API
-    const response = await axios.get("https://api.spotify.com/v1/me", {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+    const url = `https://ws.audioscrobbler.com/2.0/`;
+    const params = {
+      method: "user.getinfo",
+      user: userName,
+      api_key: apiKey,
+      format: "json",
+    };
 
-    const user = response.data;
+    const response = await axios.get(url, { params });
+
+    // Log the API response for debugging
+    console.log("API Response for getUserInfo:", response.data);
+
+    const user = response.data.user;
 
     return {
       id: user.id,
-      name: user.display_name || user.id, // Use display_name if available, fallback to id
-      displayName: user.display_name || "N/A", // If no displayName is available
-      profileURL: user.external_urls.spotify,
-      image: user.images?.[0]?.url || "", // Get the first image or return empty string
-      followers: user.followers.total || 0,
+      name: user.name,
+      realname: user.realname || "N/A",
+      url: user.url,
+      image: user.image?.find((img: any) => img.size === "medium")?.["#text"] || "",
       country: user.country || "N/A",
+      age: user.age || 0, // Ensure to handle cases where age might not be provided
+      gender: user.gender || "N/A",
+      subscriber: user.subscriber === "1",
+      playcount: parseInt(user.playcount, 10) || 0,
+      playlists: parseInt(user.playlists, 10) || 0,
+      registered: new Date(parseInt(user.registered.unixtime, 10) * 1000).toDateString(),
     };
-  } catch (error) {
-    console.error("Error fetching user info:", error);
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error fetching user info from Last.fm:", error.response?.data || error.message);
+    } else {
+      console.error("Unexpected error:", error);
+    }
     return null;
   }
 };

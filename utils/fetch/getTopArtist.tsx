@@ -1,45 +1,59 @@
-// utils/getTopAlbum.ts
+// utils/getTopArtist.ts
+
 import axios from "axios";
 import { Artist } from "../types";
+import { getServerSideProps } from "../getSSR";
+const albumArt = require("album-art");
 
-export const getTopArtist = async (spotifyAccessToken: string): Promise<Artist | null> => {
+export const getTopArtist = async (): Promise<Artist | null> => {
   try {
-    // Fetch the access token from the API route
+    // Retrieve userName and apiKey from server-side props
+    const { userName, apiKey }: any = (await getServerSideProps()).props;
 
-    if (!spotifyAccessToken) {
-      console.error("No access token available.");
+    if (!apiKey || !userName) {
+      console.error("Missing Last.fm API key or username in environment variables.");
       return null;
     }
 
-    // Make request to Spotify API for top artist
-    const response = await axios.get("https://api.spotify.com/v1/me/top/artists?limit=1", {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+    const url = `https://ws.audioscrobbler.com/2.0/`;
+    const params = {
+      method: "user.gettopartists",
+      user: userName,
+      api_key: apiKey,
+      format: "json",
+      period: "1month", // Set the period to 1 month
+      limit: 1, // Fetch only the top artist
+    };
 
-    const fetchedArtist = response.data.items[0];
+    const response = await axios.get(url, { params });
 
-    // Estimate playcount based on artist's top tracks
-    const topTracksResponse = await axios.get(
-      `https://api.spotify.com/v1/artists/${fetchedArtist.id}/top-tracks?market=US`,
-      {
-        headers: {
-          Authorization: `Bearer ${spotifyAccessToken}`,
-        },
-      }
-    );
+    // Log the API response for debugging
+    console.log("API Response for getTopArtist:", response.data);
 
-    const totalPlaycount = topTracksResponse.data.tracks.reduce((sum: number, track: any) => sum + track.popularity, 0);
+    const topArtists = response.data.topartists?.artist;
+
+    if (!topArtists || topArtists.length === 0) {
+      console.log("No top artists found.");
+      return null;
+    }
+
+    const fetchedArtist = topArtists[0];
+
+    // Use the albumArt helper to get the image URL
+    const imageURL = await albumArt(fetchedArtist.name, { size: "large" });
 
     return {
       name: fetchedArtist.name,
-      playcount: totalPlaycount,
-      imageURL: fetchedArtist.images[0].url,
-      url: fetchedArtist.external_urls.spotify,
+      playcount: parseInt(fetchedArtist.playcount, 10) || 0,
+      imageURL: imageURL,
+      url: fetchedArtist.url,
     };
-  } catch (error) {
-    console.error("Error fetching top album:", error);
+  } catch (error: any) {
+    if (axios.isAxiosError(error)) {
+      console.error("Error fetching top artist from Last.fm:", error.response?.data || error.message);
+    } else {
+      console.error("Unexpected error:", error);
+    }
     return null;
   }
 };
