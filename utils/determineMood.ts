@@ -90,18 +90,20 @@ export const determineMood = (features: AudioFeatures): string => {
   return "Neutral";
 };
 export const moodColors: { [key: string]: string } = {
-  "Pumped Up": "#ff4500", // Intense Orange
-  Slutty: "#ff69b4", // Pink
-  Blissful: "#32cd32", // Bright Green
-  "Vibin'": "#9370db", // Soft Purple
-  "Down Bad": "#4169e1", // Royal Blue
-  "Fighting Demons": "#d32f2f", // Dark Red
-  "Trappin'": "#ff8c00", // Dark Orange
-  Chilling: "#4682b4", // Steel Blue
-  "In The Trenches": "#00ced1", // Dark Turquoise
-  Sassy: "#ffeb3b", // Yellow
-  Petty: "#8b4513", // Saddle Brown
-  "Dailed In": "#708090", // Slate Grey
-  "White Woman": "#ffffff", // White
+  Hyped: "#e8f89f",
+  "Pumped Up": "#90c693",
+  Chillwave: "#78a679",
+  Melancholic: "#09009f",
+  "Groovin'": "#e8f89f",
+  Blissful: "#90c693",
+  "Vibin'": "#78a679",
+  "Down Bad": "#15706c",
+  "Fighting Demons": "#105955",
+  "Trappin'": "#e8f89f",
+  Chilling: "#78a679",
+  Sassy: "#e8f89f",
+  Petty: "#e8f89f",
+  "Dailed In": "#15706c",
+  "White Woman": "#ffffff",
   Neutral: "#9e9e9e", // Grey
 };

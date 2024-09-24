@@ -18,6 +18,8 @@ export interface MoodData {
   week: string;
 }
 
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodData | null> => {
   try {
     if (!spotifyAccessToken) {
@@ -26,46 +28,38 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
     }
 
     const now = new Date();
-
-    // Time frames adjusted for Spotify API limitations (last 24 hours)
     const fifteenMinutesAgo = new Date(now.getTime() - 15 * 60 * 1000);
     const oneHourAgo = new Date(now.getTime() - 60 * 60 * 1000);
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
-    const oneWeekAgo = oneDayAgo; // Since Spotify's API only provides data for the last 24 hours
+    const oneWeekAgo = oneDayAgo;
 
     const processTracksWithFeatures = async (since: Date): Promise<string> => {
       const tracks = await fetchRecentlyPlayedTracks(spotifyAccessToken, since);
-      console.log(`Tracks since ${since.toISOString()}: ${tracks.length}`);
 
       if (tracks.length === 0) {
         return "Neutral";
       }
 
       const trackIds = Array.from(new Set(tracks.map((item) => item.track.id)));
-
-      const audioFeaturesMap = await fetchAudioFeatures(spotifyAccessToken, trackIds);
+      const audioFeaturesMap = await throttledFetchAudioFeatures(spotifyAccessToken, trackIds);
 
       const aggregatedFeatures: AudioFeatures = {
         danceability: 0,
         energy: 0,
         valence: 0,
-        genres: [], // Add genres as an empty array initially
+        genres: [],
       };
 
       let count = 0;
-
       tracks.forEach((item) => {
         const features = audioFeaturesMap[item.track.id];
         if (features) {
           aggregatedFeatures.danceability += features.danceability;
           aggregatedFeatures.energy += features.energy;
           aggregatedFeatures.valence += features.valence;
-
-          // Accumulate genres (avoid duplicates)
           aggregatedFeatures.genres = Array.from(
             new Set([...(aggregatedFeatures.genres || []), ...(features.genres || [])])
           );
-
           count += 1;
         }
       });
@@ -81,7 +75,6 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
       return determineMood(aggregatedFeatures);
     };
 
-    // Process moods for all time frames
     const [moodFifteenMinutes, moodHour, moodDay, moodWeek] = await Promise.all([
       processTracksWithFeatures(fifteenMinutesAgo),
       processTracksWithFeatures(oneHourAgo),
@@ -96,7 +89,7 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
       week: moodWeek,
     };
   } catch (error: any) {
-    console.error("Error fetching recent moods:", error.response ? error.response.data : error.message);
+    console.error("Error fetching recent moods:", error.message);
     return null;
   }
 };
@@ -104,79 +97,87 @@ export const getRecentMoods = async (spotifyAccessToken: string): Promise<MoodDa
 const fetchRecentlyPlayedTracks = async (spotifyAccessToken: string, since: Date): Promise<RecentlyPlayedItem[]> => {
   try {
     const response = await axios.get("https://api.spotify.com/v1/me/player/recently-played?limit=50", {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
+      headers: { Authorization: `Bearer ${spotifyAccessToken}` },
     });
 
     const items: RecentlyPlayedItem[] = response.data.items;
-
-    // Convert 'since' to UTC for accurate comparison
     const sinceUTC = new Date(since.getTime() + since.getTimezoneOffset() * 60000);
 
-    const filteredItems = items.filter((item) => {
-      const playedAt = new Date(item.played_at); // This is in UTC
-      return playedAt.getTime() >= sinceUTC.getTime();
-    });
-
-    console.log(`Filtered ${filteredItems.length} tracks since ${sinceUTC.toISOString()}`);
-
-    return filteredItems;
+    return items.filter((item) => new Date(item.played_at).getTime() >= sinceUTC.getTime());
   } catch (error: any) {
-    console.error("Error fetching recently played tracks:", error.response ? error.response.data : error.message);
-    return [];
+    if (error.response?.status === 429) {
+      const retryAfter = error.response.headers["retry-after"];
+      console.warn(`Rate limit hit. Retrying after ${retryAfter} seconds.`);
+      await delay(retryAfter * 1000);
+      return fetchRecentlyPlayedTracks(spotifyAccessToken, since);
+    } else {
+      console.error("Error fetching recently played tracks:", error.message);
+      return [];
+    }
   }
 };
 
-const fetchAudioFeatures = async (
+const throttledFetchAudioFeatures = async (
   spotifyAccessToken: string,
   trackIds: string[]
 ): Promise<{ [trackId: string]: AudioFeatures }> => {
-  try {
-    const response = await axios.get(`https://api.spotify.com/v1/audio-features?ids=${trackIds.join(",")}`, {
-      headers: {
-        Authorization: `Bearer ${spotifyAccessToken}`,
-      },
-    });
+  const audioFeaturesMap: { [trackId: string]: AudioFeatures } = {};
+  const chunkSize = 50;
 
-    const audioFeaturesArray: any[] = response.data.audio_features;
-    const audioFeaturesMap: { [trackId: string]: AudioFeatures } = {};
+  for (let i = 0; i < trackIds.length; i += chunkSize) {
+    const chunk = trackIds.slice(i, i + chunkSize);
+    try {
+      const response = await axios.get(`https://api.spotify.com/v1/audio-features?ids=${chunk.join(",")}`, {
+        headers: { Authorization: `Bearer ${spotifyAccessToken}` },
+      });
+      const audioFeaturesArray = response.data.audio_features;
 
-    for (const features of audioFeaturesArray) {
-      if (features) {
-        const trackGenres = await fetchGenres(spotifyAccessToken, features.id); // Fetch genres
-        audioFeaturesMap[features.id] = {
-          danceability: features.danceability,
-          energy: features.energy,
-          valence: features.valence,
-          genres: trackGenres, // Include genres
-        };
+      for (const features of audioFeaturesArray) {
+        if (features) {
+          audioFeaturesMap[features.id] = {
+            danceability: features.danceability,
+            energy: features.energy,
+            valence: features.valence,
+            genres: await fetchGenres(spotifyAccessToken, features.id),
+          };
+        }
+      }
+      await delay(1000); // Throttle requests
+    } catch (error: any) {
+      if (error.response?.status === 429) {
+        const retryAfter = error.response.headers["retry-after"];
+        console.warn(`Rate limit hit. Retrying after ${retryAfter} seconds.`);
+        await delay(retryAfter * 1000);
+        i -= chunkSize; // Retry the same chunk
+      } else {
+        console.error("Error fetching audio features:", error.message);
       }
     }
-
-    return audioFeaturesMap;
-  } catch (error: any) {
-    console.error("Error fetching audio features:", error.response ? error.response.data : error.message);
-    return {};
   }
+
+  return audioFeaturesMap;
 };
 
 const fetchGenres = async (spotifyAccessToken: string, trackId: string): Promise<string[]> => {
   try {
-    const response = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
+    // Fetch track details to get the artist ID
+    const trackResponse = await axios.get(`https://api.spotify.com/v1/tracks/${trackId}`, {
       headers: {
         Authorization: `Bearer ${spotifyAccessToken}`,
       },
     });
 
-    const artistId = response.data.artists[0].id; // Get artist ID from the track
+    const artistId = trackResponse.data.artists[0].id; // Get the first artist ID from the track
+
+    // Fetch artist details to get genres
     const artistResponse = await axios.get(`https://api.spotify.com/v1/artists/${artistId}`, {
       headers: {
         Authorization: `Bearer ${spotifyAccessToken}`,
       },
     });
 
-    return artistResponse.data.genres; // Return genres for the artist
+    // Return the genres for the artist
+    return artistResponse.data.genres || [];
   } catch (error: any) {
     console.error("Error fetching genres:", error.response ? error.response.data : error.message);
     return [];

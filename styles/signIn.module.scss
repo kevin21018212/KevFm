@@ -1,4 +1,5 @@
 @import "/app/common.module.scss";
+
 .signInContainer {
   display: flex;
   flex-direction: column;
@@ -11,11 +12,16 @@
 
 .title {
   color: $textPrimary;
-  font-size: 8rem;
+  font-size: 10rem;
   margin-bottom: 2rem;
   text-align: center;
   text-transform: uppercase;
   letter-spacing: 2px;
+
+  // Adjust font-size for mobile phones
+  @media (max-width: 480px) {
+    font-size: 20vw;
+  }
 }
 
 .signInButton {
@@ -28,6 +34,7 @@
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.2s ease;
   box-shadow: $buttonShadow;
+
   &:hover {
     background-color: $primary-hover-color;
     transform: scale(1.05);

@@ -4,8 +4,6 @@ import { Track } from "../types";
 // Fetch recent tracks using the Spotify API
 export const getRecentTracks = async (spotifyAccessToken: string): Promise<Track[] | null> => {
   try {
-    // Fetch the Spotify access token from your API route (this needs to be set up separately)
-
     if (!spotifyAccessToken) {
       console.error("No access token available.");
       return null;
@@ -22,13 +20,24 @@ export const getRecentTracks = async (spotifyAccessToken: string): Promise<Track
     });
 
     // Extract track information from the response
-    const tracks = response.data.items.map((item: any) => ({
-      name: item.track.name,
-      artist: item.track.artists[0].name, // Get the first artist's name
-      url: item.track.external_urls.spotify, // Track URL on Spotify
-      nowplaying: false, // Spotify's recently played endpoint doesn't return `nowplaying`, so set this to false
-      playedAt: item.played_at, // When the track was played
-    }));
+    const tracks = response.data.items.map((item: any) => {
+      // Parse the played_at timestamp into a Date object
+      const playedAtDate = new Date(item.played_at);
+
+      // Format the date as needed
+      const formattedPlayedAt = playedAtDate.toLocaleString("en-US", {
+        dateStyle: "medium",
+        timeStyle: "short",
+      });
+
+      return {
+        name: item.track.name,
+        artist: item.track.artists[0].name,
+        url: item.track.external_urls.spotify,
+        nowplaying: false,
+        playedAt: formattedPlayedAt,
+      };
+    });
 
     return tracks;
   } catch (error) {

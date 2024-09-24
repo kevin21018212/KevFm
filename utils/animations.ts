@@ -38,7 +38,7 @@ export const bounceVariants: (delay: number) => Variants = (delay) => ({
       delay,
     },
   },
-  hover: { scale: 1.1 },
+  hover: { scale: 1.05 },
 });
 
 export const imageHoverVariants: Variants = {};
@@ -85,7 +85,7 @@ export const slideDownVariants = {
   visible: {
     opacity: 1,
     y: 0,
-    
+
     transition: {
       type: "spring",
       stiffness: 100,

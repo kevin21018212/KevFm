@@ -30,7 +30,7 @@
     }
 
     p {
-      margin: 1vh 0;
+      margin: 0.5vh 0;
       font-size: 1.15vw;
       color: $textSecondary;
 
@@ -47,7 +47,7 @@
   }
 
   .infoSection {
-    height: 32.5vh;
+    height: 25vh;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,12 +55,15 @@
   }
 
   .recentSection {
-    height: 100vh;
+    height: 90vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
     a h2 {
       margin-bottom: 1vw;
+    }
+    p {
+      margin: 1vh 0;
     }
   }
 

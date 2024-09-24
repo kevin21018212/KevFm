@@ -14,10 +14,10 @@ import { getUserInfo } from "@/utils/fetch/getUserInfo";
 import { getRecentTracks } from "@/utils/fetch/getRecentTracks";
 
 interface BodyProps {
-  spotifyAccessToken: string;
+  spotifyAccessToken: any;
 }
 
-const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: any | null) => {
+const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: BodyProps) => {
   const [topArtist, setTopArtist] = useState<Artist | null>(null);
   const [topTracks, setTopTracks] = useState<Track[] | null>(null);
   const [userInfo, setUserInfo] = useState<User | null>(null);
@@ -101,7 +101,7 @@ const Body: React.FC<BodyProps> = ({ spotifyAccessToken }: any | null) => {
 
         <motion.div className={styles.bodyMainMiddle}>
           {topTracks.slice(0, 3).map((track, index) => (
-            <motion.div key={track.name} className={styles[`bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`]}>
+            <motion.div key={index} className={styles[`bodyMainMiddleCover${["Right", "Middle", "Left"][index]}`]}>
               <ImageCard src={track.imageURL} alt={track.name} delay={0.4 + index * 0.2} />
             </motion.div>
           ))}

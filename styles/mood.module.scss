@@ -1,5 +1,3 @@
-/* components/mood/mood.module.scss */
-
 @import "/app/common.module.scss";
 
 .moodContainer {
@@ -46,7 +44,7 @@
 
   /* Individual Card */
   .card {
-    background-color: $secondaryColor;
+    /* Removed background-color here */
     border-radius: 20px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 30px rgba(255, 255, 255, 0.2);
     display: flex;
@@ -66,12 +64,12 @@
 
       h3 {
         margin-left: -5%;
-        font-size: 2.25vw;
+        font-size: 2vw;
         @extend .subHeading;
       }
 
       p {
-        font-size: 2vw;
+        font-size: 1.75vw;
         font-weight: 500;
         color: $textSecondary;
       }
@@ -149,65 +147,7 @@
     grid-row: span 1;
   }
 
-  /* Mood-Specific Styles */
-  .pumpedUp {
-    background-color: #ff5722; // Deep Orange
-  }
-
-  .slutty {
-    background-color: #e91e63; // Pink
-  }
-
-  .blissful {
-    background-color: #4caf50; // Green
-  }
-
-  .vibin {
-    background-color: #9c27b0; // Purple
-  }
-
-  .downBad {
-    background-color: #3f51b5; // Indigo
-  }
-
-  .fightingDemons {
-    background-color: #f44336; // Red
-  }
-
-  .trappin {
-    background-color: #ff9800; // Orange
-  }
-
-  .chilling {
-    background-color: #2196f3; // Blue
-  }
-
-  .inTheTrenches {
-    background-color: #00bcd4; // Cyan
-  }
-
-  .sassy {
-    background-color: #cddc39; // Lime
-    color: $textInverse;
-  }
-
-  .petty {
-    background-color: #795548; // Brown
-  }
-
-  .dailedIn {
-    background-color: #607d8b; // Blue Grey
-  }
-
-  .whiteWoman {
-    background-color: #ffffff; // White
-    color: $textInverse;
-    border: 1px solid #ccc;
-  }
-
-  .neutral {
-    background-color: #9e9e9e; // Grey
-  }
+  /* Removed Mood-Specific Styles */
 
   /* Loading and Error States */
   .loading,
@@ -302,8 +242,34 @@
       .loading,
       .error,
       .noData {
-        font-size: 4.5vw; // Increase these as well for better readability
+        font-size: 4.5vw;
       }
     }
+  }
+}
+
+.spinnerContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  width: 100%;
+}
+
+.spinner {
+  border: 8px solid rgba(0, 0, 0, 0.1);
+  border-top: 8px solid $primaryColor;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }

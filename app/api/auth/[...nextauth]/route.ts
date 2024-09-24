@@ -1,5 +1,4 @@
 // app/api/auth/[...nextauth]/route.ts
-
 import NextAuth, { NextAuthOptions } from "next-auth";
 import SpotifyProvider from "next-auth/providers/spotify";
 
@@ -24,18 +23,18 @@ const authOptions: NextAuthOptions = {
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
+        token.accessToken = account.access_token!;
+        token.refreshToken = account.refresh_token!;
         if (account.expires_at) {
           token.expiresAt = account.expires_at * 1000; // Convert to milliseconds
         }
       }
       return token;
     },
-    async session({ session, token }) {
-      session.user.accessToken = token.accessToken as string;
-      session.user.refreshToken = token.refreshToken as string;
-      session.user.expiresAt = token.expiresAt as number;
+    async session({ session, token }: { session: any; token: any }) {
+      session.user.accessToken = token.accessToken;
+      session.user.refreshToken = token.refreshToken;
+      session.user.expiresAt = token.expiresAt;
       return session;
     },
   },

@@ -50,13 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ userInfo, recentTracks }) => {
       <motion.div className={styles.recentSection} variants={bounceVariants(0.1)}>
         <h2>Recent Tracks</h2>
         {recentTracks.map((track, index) => (
-          <a
-            key={track.name}
-            href={track.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ textDecoration: "none" }}
-          >
+          <a key={index} href={track.url} target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
             <motion.div className={styles.track} variants={bounceVariants(0.1 + index * 0.1)} whileHover="hover">
               <p>
                 <span className={styles.trackName}>{track.name}</span> by {track.artist}

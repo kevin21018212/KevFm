@@ -4,12 +4,11 @@ import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import styles from "../styles/mood.module.scss";
 import { getRecentMoods, MoodData } from "@/utils/fetch/getRecentMoods";
-import { containerVariants, bounceVariants, fadeInOutVariants } from "@/utils/animations"; // Import variants
+import { containerVariants, bounceVariants } from "@/utils/animations";
+import { moodColors } from "@/utils/determineMood";
 
 const MoodComponent = ({ spotifyAccessToken }: any) => {
   const [moodData, setMoodData] = useState<MoodData | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMoods = async () => {
@@ -18,70 +17,41 @@ const MoodComponent = ({ spotifyAccessToken }: any) => {
         if (moods) {
           setMoodData(moods);
         } else {
-          setError("Unable to fetch moods.");
+          // Handle case when moods are not returned
         }
       } catch (err) {
-        setError("An unexpected error occurred.");
         console.error(err);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchMoods();
-  }, [spotifyAccessToken]);
+  }, []);
 
   if (!moodData) {
     return (
       <div className={styles.moodContainer}>
-        <h2>kevs Recents moods</h2>
-        <div className={styles.cardsContainer}></div>
+        <h2>Kev's Recent Moods</h2>
+
+        <div className={styles.spinnerContainer}>
+          <div className={styles.spinner}></div>
+        </div>
       </div>
     );
   }
 
-  // Helper function to get mood class based on mood value
-  const getMoodClass = (mood: string) => {
-    switch (mood) {
-      case "Pumped Up":
-        return styles.pumpedUp;
-      case "Slutty":
-        return styles.slutty;
-      case "Blissful":
-        return styles.blissful;
-      case "Vibin":
-        return styles.vibin;
-      case "Down Bad":
-        return styles.downBad;
-      case "Fighting Demons":
-        return styles.fightingDemons;
-      case "Trappin'":
-        return styles.trappin;
-      case "Chilling":
-        return styles.chilling;
-      case "In the Trenches":
-        return styles.inTheTrenches;
-      case "Sassy":
-        return styles.sassy;
-      case "Petty":
-        return styles.petty;
-      case "Dailed In":
-        return styles.dailedIn;
-      case "White Woman":
-        return styles.whiteWoman;
-      case "Neutral":
-      default:
-        return styles.neutral;
-    }
+  // Helper function to get the background color based on the mood
+  const getMoodBackgroundColor = (mood: string) => {
+    return moodColors[mood] || moodColors["Neutral"];
   };
 
   return (
     <motion.div className={styles.moodContainer} variants={containerVariants} initial="hidden" animate="visible">
-      <h2>kevs Recents moods</h2>
+      <h2>Kev's Recent Moods</h2>
       <div className={styles.cardsContainer}>
         {/* 15 Minutes Card */}
         <motion.div
-          className={`${styles.card} ${styles.card15} ${getMoodClass(moodData.fifteenMinutes)}`}
+          className={`${styles.card} ${styles.card15}`}
+          style={{ backgroundColor: getMoodBackgroundColor(moodData.fifteenMinutes) }}
           variants={bounceVariants(0.2)}
           initial="hidden"
           animate="visible"
@@ -95,7 +65,8 @@ const MoodComponent = ({ spotifyAccessToken }: any) => {
 
         {/* 1 Hour Card */}
         <motion.div
-          className={`${styles.card} ${styles.card1h} ${getMoodClass(moodData.hour)}`}
+          className={`${styles.card} ${styles.card1h}`}
+          style={{ backgroundColor: getMoodBackgroundColor(moodData.hour) }}
           variants={bounceVariants(0.4)}
           initial="hidden"
           animate="visible"
@@ -109,7 +80,8 @@ const MoodComponent = ({ spotifyAccessToken }: any) => {
 
         {/* Day Card */}
         <motion.div
-          className={`${styles.card} ${styles.cardDay} ${getMoodClass(moodData.day)}`}
+          className={`${styles.card} ${styles.cardDay}`}
+          style={{ backgroundColor: getMoodBackgroundColor(moodData.day) }}
           variants={bounceVariants(0.6)}
           initial="hidden"
           animate="visible"
@@ -123,7 +95,8 @@ const MoodComponent = ({ spotifyAccessToken }: any) => {
 
         {/* Week Card */}
         <motion.div
-          className={`${styles.card} ${styles.cardWeek} ${getMoodClass(moodData.week)}`}
+          className={`${styles.card} ${styles.cardWeek}`}
+          style={{ backgroundColor: getMoodBackgroundColor(moodData.week) }}
           variants={bounceVariants(0.8)}
           initial="hidden"
           animate="visible"
