@@ -61,6 +61,7 @@
     .cardContent {
       text-align: center;
       z-index: 2;
+      overflow: hidden; // Prevents pseudo-elements from overflowing
 
       h3 {
         margin-left: -5%;
@@ -105,17 +106,13 @@
 
     /* Hover States */
     &:hover {
-      transform: scale(1.05); // Scale up the card only
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(255, 255, 255, 0.3); // Adjust shadow for effect
-    }
-
-    &:hover:before {
-      opacity: 1;
+      transform: translateY(-10px);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3), 0 0 60px rgba(255, 255, 255, 0.3);
     }
 
     &:hover:after {
       opacity: 0.4;
-      transform: rotate(45deg); // Only rotate and opacity change, no scaling on the background
+      transform: rotate(45deg) scale(0.8); // Reduced scale on hover to avoid overflow
     }
   }
 
