@@ -79,7 +79,6 @@ const MoodComponent = () => {
           variants={bounceVariants(0.2)}
           initial="hidden"
           animate="visible"
-          whileHover="hover"
         >
           <div className={styles.cardContent}>
             <h3>Current</h3>
@@ -94,7 +93,6 @@ const MoodComponent = () => {
           variants={bounceVariants(0.4)}
           initial="hidden"
           animate="visible"
-          whileHover="hover"
         >
           <div className={styles.cardContent}>
             <h3>Today</h3>
@@ -109,7 +107,6 @@ const MoodComponent = () => {
           variants={bounceVariants(0.6)}
           initial="hidden"
           animate="visible"
-          whileHover="hover"
         >
           <div className={styles.cardContent}>
             <h3>This Week</h3>
@@ -124,7 +121,6 @@ const MoodComponent = () => {
           variants={bounceVariants(0.8)}
           initial="hidden"
           animate="visible"
-          whileHover="hover"
         >
           <div className={styles.cardContent}>
             <h3>This Month</h3>
