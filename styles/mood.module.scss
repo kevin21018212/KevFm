@@ -126,6 +126,20 @@
     &:after {
       display: none;
     }
+     &:hover {
+        transform: none; // Disable scaling
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1), 0 0 30px rgba(255, 255, 255, 0.2); // Keep the original shadow
+      }
+
+      &:hover:after {
+        transform: rotate(30deg) scale(0.8); // Keep the original state
+        opacity: 0.2;
+      }
+
+      &:hover:before {
+        opacity: 0;
+      }
+    }
   }
 
   /* Grid Span Variants */
