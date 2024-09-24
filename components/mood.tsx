@@ -8,7 +8,6 @@ import { containerVariants, bounceVariants } from "@/utils/animations";
 import { moodColors } from "@/utils/determineMood";
 import { MoodData } from "@/utils/types";
 import { getRecentMoods } from "@/utils/fetch/getRecentMoods";
-import { getServerSideProps } from "@/utils/getSSR";
 
 const MoodComponent = () => {
   const [moodData, setMoodData] = useState<MoodData>({
@@ -23,7 +22,8 @@ const MoodComponent = () => {
   useEffect(() => {
     const fetchMoods = async () => {
       try {
-        const moods = await getRecentMoods();
+        const res = await fetch("/api/moods"); // Calls the API route created earlier
+        const moods = await res.json();
         if (moods) {
           setMoodData(moods);
         } else {
