@@ -122,7 +122,13 @@
   /* Additional Responsive Styles */
   @media (max-width: 700px) {
     .card {
-      padding: 2vh; // Increase padding for better spacing
+      padding: 2vh; // Adjust padding for better spacing
+
+      // Disable overlay on mobile
+      &:before,
+      &:after {
+        display: none;
+      }
     }
   }
 
